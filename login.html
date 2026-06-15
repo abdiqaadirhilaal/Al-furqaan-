@@ -148,6 +148,7 @@
   </div>
 
   <script src="js/data.js"></script>
+  <script src="js/sync.js"></script>
   <script>
     // Password visibility toggle
     function togglePassword(inputId, btn) {
@@ -181,13 +182,31 @@
     document.querySelector('.tab-btn.active')?.classList.add('bg-white', 'shadow-sm', 'text-emerald-700');
 
     // Manager Login
-    document.getElementById('managerLoginForm').addEventListener('submit', function(e) {
+    document.getElementById('managerLoginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const username = document.getElementById('mgrUsername').value.trim();
       const password = document.getElementById('mgrPassword').value;
       const btn = this.querySelector('button');
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
       btn.disabled = true;
+
+      // Try backend login first if configured
+      if (Sync.isConfigured() && await Sync.isAvailable()) {
+        const resp = await fetch(Sync.getApiUrl() + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, role: 'manager' })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          localStorage.setItem('furqaan_backend_token', data.token);
+          Auth.login(username, password, 'manager');
+          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
+          window.location.href = 'manager-dashboard.html';
+          return;
+        }
+        // fall through to localStorage login on failure
+      }
 
       setTimeout(() => {
         const result = Auth.login(username, password, 'manager');
@@ -203,13 +222,31 @@
     });
 
     // Teacher Login
-    document.getElementById('teacherLoginForm').addEventListener('submit', function(e) {
+    document.getElementById('teacherLoginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const id = document.getElementById('tchrId').value.trim();
       const password = document.getElementById('tchrPassword').value;
       const btn = this.querySelector('button');
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
       btn.disabled = true;
+
+      // Try backend login first if configured
+      if (Sync.isConfigured() && await Sync.isAvailable()) {
+        const resp = await fetch(Sync.getApiUrl() + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: id, password, role: 'teacher' })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          localStorage.setItem('furqaan_backend_token', data.token);
+          Auth.login(id, password, 'teacher');
+          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
+          window.location.href = 'teacher-dashboard.html';
+          return;
+        }
+        // fall through to localStorage login on failure
+      }
 
       setTimeout(() => {
         const result = Auth.login(id, password, 'teacher');

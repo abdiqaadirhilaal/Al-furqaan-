@@ -453,9 +453,33 @@
                 <i class="fas fa-save mr-2"></i>Save Settings
               </button>
             </form>
-            <!-- Data Backup -->
-            <div class="mt-8 p-4 bg-blue-50 rounded-xl">
-              <h4 class="font-bold text-blue-700 mb-2"><i class="fas fa-database mr-2"></i>Data Backup & Restore</h4>
+            <!-- PostgreSQL Database Sync -->
+            <div class="mt-8 p-4 bg-indigo-50 rounded-xl">
+              <h4 class="font-bold text-indigo-700 mb-2"><i class="fas fa-server mr-2"></i>PostgreSQL Database (Neon)</h4>
+              <p class="text-sm text-indigo-600 mb-4">Connect to Neon PostgreSQL for permanent data storage. Data will survive browser cache clears.</p>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Backend API URL</label>
+                  <div class="flex gap-2">
+                    <input type="url" id="backendUrl" class="form-input flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none text-sm" placeholder="https://your-app.onrender.com">
+                    <button onclick="testConnection()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-700 transition-colors"><i class="fas fa-plug mr-1"></i>Test</button>
+                  </div>
+                  <p id="connStatus" class="text-xs mt-1 hidden"></p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button onclick="syncToDatabase()" class="bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm hover:bg-emerald-700 transition-colors inline-flex items-center gap-1">
+                    <i class="fas fa-upload"></i> Sync → PostgreSQL
+                  </button>
+                  <button onclick="restoreFromDb()" class="bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors inline-flex items-center gap-1">
+                    <i class="fas fa-download"></i> Restore ← PostgreSQL
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- JSON Backup -->
+            <div class="mt-4 p-4 bg-blue-50 rounded-xl">
+              <h4 class="font-bold text-blue-700 mb-2"><i class="fas fa-database mr-2"></i>JSON Backup & Restore</h4>
               <p class="text-sm text-blue-600 mb-4">Export your data to a file for permanent backup. Import to restore data after browser cache is cleared.</p>
               <div class="flex flex-wrap gap-3">
                 <button onclick="exportData()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
@@ -479,6 +503,7 @@
   </main>
 
   <script src="js/data.js"></script>
+  <script src="js/sync.js"></script>
   <script>
     // ======================== AUTH CHECK ========================
     const currentUser = Auth.requireAuth('manager');
@@ -968,6 +993,83 @@
       reader.readAsText(file);
     }
 
+    // ======================== POSTGRESQL SYNC ========================
+    function initBackendUrl() {
+      const url = Sync.getApiUrl();
+      if (url) document.getElementById('backendUrl').value = url;
+    }
+
+    async function testConnection() {
+      const url = document.getElementById('backendUrl').value.trim();
+      const statusEl = document.getElementById('connStatus');
+      statusEl.className = 'text-xs mt-1';
+
+      if (!url) {
+        statusEl.className = 'text-xs mt-1 text-red-600';
+        statusEl.textContent = 'Please enter a backend URL';
+        statusEl.classList.remove('hidden');
+        return;
+      }
+
+      Sync.setApiUrl(url);
+      statusEl.textContent = 'Testing connection...';
+      statusEl.className = 'text-xs mt-1 text-blue-600';
+      statusEl.classList.remove('hidden');
+
+      const available = await Sync.isAvailable();
+      if (available) {
+        statusEl.textContent = '✅ Connected to PostgreSQL database!';
+        statusEl.className = 'text-xs mt-1 text-green-600';
+      } else {
+        statusEl.textContent = '❌ Cannot connect. Check the URL and make sure the server is running.';
+        statusEl.className = 'text-xs mt-1 text-red-600';
+      }
+    }
+
+    async function syncToDatabase() {
+      if (!Sync.isConfigured()) {
+        Utils.showToast('Please configure and test the backend URL first', 'error');
+        return;
+      }
+
+      const btn = event.target;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
+      btn.disabled = true;
+
+      try {
+        const result = await Sync.syncAll();
+        Utils.showToast(`✅ Synced: ${result.students} students, ${result.teachers} teachers, ${result.payments} payments`, 'success');
+      } catch (e) {
+        Utils.showToast('Sync failed: ' + e.message, 'error');
+      }
+
+      btn.innerHTML = '<i class="fas fa-upload"></i> Sync → PostgreSQL';
+      btn.disabled = false;
+    }
+
+    async function restoreFromDb() {
+      if (!Sync.isConfigured()) {
+        Utils.showToast('Please configure and test the backend URL first', 'error');
+        return;
+      }
+      if (!confirm('Restore will OVERWRITE current localStorage data with database data. Continue?')) return;
+
+      const btn = event.target;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Restoring...';
+      btn.disabled = true;
+
+      try {
+        const result = await Sync.restoreFromBackend();
+        Utils.showToast(`✅ Restored: ${result.students} students, ${result.teachers} teachers. Reloading...`, 'success');
+        setTimeout(() => window.location.reload(), 1500);
+      } catch (e) {
+        Utils.showToast('Restore failed: ' + e.message, 'error');
+      }
+
+      btn.innerHTML = '<i class="fas fa-download"></i> Restore ← PostgreSQL';
+      btn.disabled = false;
+    }
+
     function handleLogout() {
       Auth.logout();
       window.location.href = 'login.html';
@@ -1010,6 +1112,7 @@
       });
     }
 
+    initBackendUrl();
     loadClassFilters();
     loadRegisterForm();
     loadTeacherRegForm();
