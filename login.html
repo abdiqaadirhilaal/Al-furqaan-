@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Al-Furqaan Quran School</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
+            gold: { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207', 800: '#854d0e', 900: '#713f12' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(5,150,105,0.2); } 50% { box-shadow: 0 0 40px rgba(5,150,105,0.4); } }
+    * { font-family: 'Inter', sans-serif; }
+    .arabic { font-family: 'Amiri', serif; }
+    .animate-fade-in { animation: fadeIn 0.6s ease forwards; }
+    .animate-slide-up { animation: slideUp 0.8s ease forwards; }
+    .bg-islamic-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3C/svg%3E"); }
+    .login-card { animation: glow 3s ease-in-out infinite; }
+    .form-input { transition: all 0.3s ease; }
+    .form-input:focus { border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.15); }
+    .tab-btn { transition: all 0.3s ease; position: relative; }
+    .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: #059669; border-radius: 2px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-emerald-700 via-emerald-800 to-emerald-900 flex items-center justify-center p-4 relative overflow-hidden">
+  <div class="absolute inset-0 bg-islamic-pattern opacity-50"></div>
+
+  <!-- Decorative elements -->
+  <div class="absolute top-10 left-10 text-white/5 text-8xl"><i class="fas fa-star-and-crescent"></i></div>
+  <div class="absolute bottom-10 right-10 text-white/5 text-8xl"><i class="fas fa-mosque"></i></div>
+
+  <div class="relative w-full max-w-md animate-slide-up">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-full shadow-2xl mb-4 border-2 border-gold-400/30">
+        <i class="fas fa-quran text-gold-400 text-3xl"></i>
+      </div>
+      <h1 class="text-2xl font-bold text-white">Al-Furqaan Quran School</h1>
+      <p class="text-emerald-200 text-sm">School Management Portal</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="bg-white rounded-3xl shadow-2xl p-8 login-card">
+      <!-- Tabs -->
+      <div class="flex mb-8 bg-gray-100 rounded-xl p-1">
+        <button class="tab-btn active flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all" data-tab="manager">
+          <i class="fas fa-user-tie mr-2"></i>Manager
+        </button>
+        <button class="tab-btn flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all text-gray-500 hover:text-gray-700" data-tab="teacher">
+          <i class="fas fa-chalkboard-teacher mr-2"></i>Teacher
+        </button>
+      </div>
+
+      <!-- Manager Login -->
+      <div class="tab-content active" id="tab-manager">
+        <form id="managerLoginForm" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-user text-emerald-600 mr-1"></i> Username
+            </label>
+            <input type="text" id="mgrUsername" value="manager" required
+              class="form-input w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none"
+              placeholder="Enter username">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-lock text-emerald-600 mr-1"></i> Password
+            </label>
+            <div class="relative">
+              <input type="password" id="mgrPassword" value="admin123" required
+                class="form-input w-full px-4 py-3.5 pr-12 rounded-xl border border-gray-200 focus:outline-none"
+                placeholder="Enter password">
+              <button type="button" onclick="togglePassword('mgrPassword', this)"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit"
+            class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl text-base">
+            <i class="fas fa-sign-in-alt mr-2"></i>Login as Manager
+          </button>
+          <p class="text-center text-xs text-gray-400 mt-4">
+            <i class="fas fa-info-circle mr-1"></i>
+            Default: username <strong>manager</strong>, password <strong>admin123</strong>
+          </p>
+        </form>
+      </div>
+
+      <!-- Teacher Login -->
+      <div class="tab-content" id="tab-teacher">
+        <form id="teacherLoginForm" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-id-card text-emerald-600 mr-1"></i> Teacher ID
+            </label>
+            <input type="text" id="tchrId" value="T001" required
+              class="form-input w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none"
+              placeholder="e.g. T001">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fas fa-lock text-emerald-600 mr-1"></i> Password
+            </label>
+            <div class="relative">
+              <input type="password" id="tchrPassword" value="furqaan1234" required
+                class="form-input w-full px-4 py-3.5 pr-12 rounded-xl border border-gray-200 focus:outline-none"
+                placeholder="Enter password">
+              <button type="button" onclick="togglePassword('tchrPassword', this)"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit"
+            class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl text-base">
+            <i class="fas fa-sign-in-alt mr-2"></i>Login as Teacher
+          </button>
+          <p class="text-center text-xs text-gray-400 mt-4">
+            <i class="fas fa-info-circle mr-1"></i>
+            Default: ID <strong>T001/T002/T003/T004</strong>, password <strong>furqaan1234</strong>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Back to home -->
+    <div class="text-center mt-6">
+      <a href="index.html" class="text-emerald-200 hover:text-white transition-colors text-sm">
+        <i class="fas fa-arrow-left mr-2"></i>Back to Home
+      </a>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    // Password visibility toggle
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active', 'bg-white', 'shadow-sm', 'text-emerald-700');
+          b.classList.add('text-gray-500');
+        });
+        this.classList.add('active', 'bg-white', 'shadow-sm', 'text-emerald-700');
+        this.classList.remove('text-gray-500');
+
+        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+        document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Auto-fill first tab as active
+    document.querySelector('.tab-btn.active')?.classList.add('bg-white', 'shadow-sm', 'text-emerald-700');
+
+    // Manager Login
+    document.getElementById('managerLoginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('mgrUsername').value.trim();
+      const password = document.getElementById('mgrPassword').value;
+      const btn = this.querySelector('button');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const result = Auth.login(username, password, 'manager');
+        if (result.success) {
+          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
+          window.location.href = 'manager-dashboard.html';
+        } else {
+          btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Login as Manager';
+          btn.disabled = false;
+          Utils.showToast(result.message, 'error');
+        }
+      }, 800);
+    });
+
+    // Teacher Login
+    document.getElementById('teacherLoginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const id = document.getElementById('tchrId').value.trim();
+      const password = document.getElementById('tchrPassword').value;
+      const btn = this.querySelector('button');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const result = Auth.login(id, password, 'teacher');
+        if (result.success) {
+          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
+          window.location.href = 'teacher-dashboard.html';
+        } else {
+          btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Login as Teacher';
+          btn.disabled = false;
+          Utils.showToast(result.message, 'error');
+        }
+      }, 800);
+    });
+
+    // Redirect if already logged in
+    const user = Auth.getCurrentUser();
+    if (user) {
+      if (user.role === 'manager') window.location.href = 'manager-dashboard.html';
+      else if (user.role === 'teacher') window.location.href = 'teacher-dashboard.html';
+    }
+  </script>
+</body>
+</html>

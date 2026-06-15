@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Al-Furqaan Quran School</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
+            gold: { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207', 800: '#854d0e', 900: '#713f12' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    * { font-family: 'Inter', sans-serif; }
+    .arabic { font-family: 'Amiri', serif; }
+    .animate-fade-up { animation: fadeInUp 0.8s ease forwards; }
+    .animate-fade-in { animation: fadeIn 1s ease forwards; }
+    .scroll-hidden { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+    .scroll-show { opacity: 1; transform: translateY(0); }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .gold-text { background: linear-gradient(135deg, #eab308, #ca8a04, #eab308); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-link { position: relative; }
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #eab308; transition: width 0.3s ease; }
+    .nav-link:hover::after { width: 100%; }
+    .mobile-menu { transition: max-height 0.4s ease, opacity 0.3s ease; max-height: 0; opacity: 0; overflow: hidden; }
+    .mobile-menu.open { max-height: 400px; opacity: 1; }
+    .hero-gradient { background: linear-gradient(135deg, #064e3b 0%, #047857 30%, #059669 60%, #047857 100%); }
+    .islamic-pattern-overlay { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3C/svg%3E"); }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16 lg:h-20">
+        <a href="index.html" class="flex items-center space-x-3">
+          <div class="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-full flex items-center justify-center shadow-lg">
+            <i class="fas fa-quran text-gold-400 text-lg lg:text-xl"></i>
+          </div>
+          <div>
+            <h1 class="text-lg lg:text-xl font-bold text-emerald-800 leading-tight">Al-Furqaan</h1>
+            <p class="text-[10px] lg:text-xs text-gold-600 font-semibold">Quran School</p>
+          </div>
+        </a>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html" class="nav-link text-gray-600 font-medium transition-colors hover:text-gold-600">Home</a>
+          <a href="about.html" class="nav-link text-emerald-700 font-medium transition-colors hover:text-gold-600">About</a>
+          <a href="index.html#programs" class="nav-link text-gray-600 font-medium transition-colors hover:text-gold-600">Programs</a>
+          <a href="contact.html" class="nav-link text-gray-600 font-medium transition-colors hover:text-gold-600">Contact</a>
+          <a href="login.html" class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-2.5 rounded-full font-medium hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl text-sm">
+            <i class="fas fa-sign-in-alt mr-2"></i>Login
+          </a>
+        </div>
+        <button id="mobileBtn" class="md:hidden text-emerald-700 text-2xl p-2">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <div id="mobileMenu" class="mobile-menu md:hidden">
+        <a href="index.html" class="block px-4 py-3 text-gray-600 font-medium border-b border-gray-100">Home</a>
+        <a href="about.html" class="block px-4 py-3 text-emerald-700 font-medium border-b border-gray-100">About</a>
+        <a href="index.html#programs" class="block px-4 py-3 text-gray-600 font-medium border-b border-gray-100">Programs</a>
+        <a href="contact.html" class="block px-4 py-3 text-gray-600 font-medium border-b border-gray-100">Contact</a>
+        <a href="login.html" class="block px-4 py-3 text-emerald-700 font-medium"><i class="fas fa-sign-in-alt mr-2"></i>Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO BANNER -->
+  <section class="relative pt-16 lg:pt-20 hero-gradient overflow-hidden">
+    <div class="islamic-pattern-overlay absolute inset-0 opacity-20"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 text-center relative">
+      <div class="animate-fade-in">
+        <span class="text-gold-400 font-semibold text-sm uppercase tracking-wider">About Us</span>
+        <h1 class="arabic text-4xl sm:text-5xl lg:text-6xl font-bold text-white mt-4 mb-4">مدرسة الفرقان لتحفيظ القرآن الكريم</h1>
+        <p class="text-xl lg:text-2xl text-emerald-100">Maxaan Uga Duwanahay Dugsiyada Kale?</p>
+      </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0">
+      <svg viewBox="0 0 1440 60" fill="none"><path d="M0 60L60 50L120 55L180 45L240 50L300 40L360 45L420 35L480 40L540 30L600 35L660 25L720 30L780 20L840 25L900 15L960 20L1020 10L1080 15L1140 5L1200 10L1260 0L1320 5L1380 0L1440 10V60H0Z" fill="white"/></path></svg>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US CARDS -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 scroll-hidden">
+        <h2 class="text-3xl lg:text-4xl font-bold text-emerald-800">
+          Maxaan Uga Duwanahay <span class="gold-text">Dugsiyada Kale?</span>
+        </h2>
+        <p class="text-gray-500 mt-4 max-w-3xl mx-auto">Discover what makes Al-Furqaan the premier choice for Quranic education in Mogadishu.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div class="bg-gradient-to-br from-emerald-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-emerald-100">
+          <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-user-graduate text-emerald-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Macallimiin Khibrad Leh</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Our teachers are highly qualified with years of experience in Quranic education and hold certifications in Quran memorization and Tajweed.</p>
+        </div>
+        <div class="bg-gradient-to-br from-gold-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-gold-100">
+          <div class="w-16 h-16 bg-gold-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-book-open text-gold-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Xifdin Tayo Sare Leh</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Structured memorization program with daily revision, new lessons, and weekly assessments to ensure quality Hifdh.</p>
+        </div>
+        <div class="bg-gradient-to-br from-emerald-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-emerald-100">
+          <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-voice-over text-emerald-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Tajwiid Sax Ah</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Proper Tajweed instruction following the rules of recitation as taught by certified Qaris and qualified instructors.</p>
+        </div>
+        <div class="bg-gradient-to-br from-gold-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-gold-100">
+          <div class="w-16 h-16 bg-gold-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-chart-line text-gold-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Dabagal Joogto Ah</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Regular monitoring and progress tracking for every student with detailed reports shared with parents.</p>
+        </div>
+        <div class="bg-gradient-to-br from-gold-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-gold-100">
+          <div class="w-16 h-16 bg-gold-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-laptop text-gold-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Nidaam Casri Ah</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Modern management system for efficient school operations including attendance tracking, finance, and reporting.</p>
+        </div>
+        <div class="bg-gradient-to-br from-emerald-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-emerald-100">
+          <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-file-alt text-emerald-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Warbixin Joogto Ah</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Regular progress reports to parents via our online portal and parent-teacher meetings every term.</p>
+        </div>
+        <div class="bg-gradient-to-br from-gold-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-gold-100">
+          <div class="w-16 h-16 bg-gold-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-hand-holding-heart text-gold-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Akhlaaq Islaami Ah</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Islamic character development integrated into daily lessons, teaching students Islamic manners and values.</p>
+        </div>
+        <div class="bg-gradient-to-br from-emerald-50 to-white rounded-2xl p-8 shadow-lg card-hover scroll-hidden border border-emerald-100">
+          <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-shield-heart text-emerald-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-emerald-800 mb-3">Deegaan Ammaan Ah</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Safe, secure, and nurturing learning environment with proper supervision and Islamic atmosphere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION & VISION -->
+  <section class="py-16 lg:py-24 bg-emerald-800 relative overflow-hidden">
+    <div class="islamic-pattern-overlay absolute inset-0 opacity-10"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div class="grid md:grid-cols-2 gap-12">
+        <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 lg:p-12 scroll-hidden border border-white/10">
+          <div class="w-16 h-16 bg-gold-500/20 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-bullseye text-gold-400 text-2xl"></i>
+          </div>
+          <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4">Our Mission</h2>
+          <p class="text-emerald-100 text-lg leading-relaxed">
+            Korinta Jiilka Qur'aanka Kariimka iyo Akhlaaqda Suuban.<br>
+            <span class="text-emerald-300 text-sm">Nurturing a generation of Quran memorizers with excellent character.</span>
+          </p>
+          <div class="mt-6 arabic text-gold-300 text-xl">
+            وَرَبِّكَ فَكَبِّرْ
+          </div>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 lg:p-12 scroll-hidden border border-white/10">
+          <div class="w-16 h-16 bg-gold-500/20 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-eye text-gold-400 text-2xl"></i>
+          </div>
+          <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4">Our Vision</h2>
+          <p class="text-emerald-100 text-lg leading-relaxed">
+            Inuu Al-Furqaan noqdo dugsi hormuud u ah barashada Qur'aanka Kariimka.<br>
+            <span class="text-emerald-300 text-sm">To be the leading institution in Quranic education and Islamic studies.</span>
+          </p>
+          <div class="mt-6 arabic text-gold-300 text-xl">
+            اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 scroll-hidden">
+        <span class="text-gold-600 font-semibold text-sm uppercase tracking-wider">Our Values</span>
+        <h2 class="text-3xl lg:text-4xl font-bold text-emerald-800 mt-2">Core <span class="gold-text">Values</span></h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center p-8 scroll-hidden">
+          <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-quran text-emerald-600 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-emerald-800 mb-2">Quran First</h3>
+          <p class="text-gray-500 text-sm">The Quran is at the center of everything we do.</p>
+        </div>
+        <div class="text-center p-8 scroll-hidden">
+          <div class="w-16 h-16 mx-auto bg-gold-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-hand-holding-heart text-gold-600 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-emerald-800 mb-2">Ihsan</h3>
+          <p class="text-gray-500 text-sm">Excellence in worship, character, and learning.</p>
+        </div>
+        <div class="text-center p-8 scroll-hidden">
+          <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-users text-emerald-600 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-emerald-800 mb-2">Community</h3>
+          <p class="text-gray-500 text-sm">Building a strong Muslim community through education.</p>
+        </div>
+        <div class="text-center p-8 scroll-hidden">
+          <div class="w-16 h-16 mx-auto bg-gold-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-scale-balanced text-gold-600 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-emerald-800 mb-2">Justice</h3>
+          <p class="text-gray-500 text-sm">Fair treatment and equal opportunities for all students.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-emerald-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center">
+              <i class="fas fa-quran text-emerald-900"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg">Al-Furqaan</h3>
+              <p class="text-emerald-300 text-xs">Quran School</p>
+            </div>
+          </div>
+          <p class="text-emerald-300 text-sm leading-relaxed">Dedicated to nurturing a generation of Quran memorizers and righteous Muslims.</p>
+        </div>
+        <div>
+          <h4 class="font-bold text-gold-400 mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-emerald-300 hover:text-white text-sm">Home</a></li>
+            <li><a href="about.html" class="text-emerald-300 hover:text-white text-sm">About Us</a></li>
+            <li><a href="index.html#programs" class="text-emerald-300 hover:text-white text-sm">Programs</a></li>
+            <li><a href="contact.html" class="text-emerald-300 hover:text-white text-sm">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-gold-400 mb-4">Programs</h4>
+          <ul class="space-y-2">
+            <li><span class="text-emerald-300 text-sm">Quran Memorization</span></li>
+            <li><span class="text-emerald-300 text-sm">Tajweed Rules</span></li>
+            <li><span class="text-emerald-300 text-sm">Islamic Studies</span></li>
+            <li><span class="text-emerald-300 text-sm">Arabic Language</span></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-gold-400 mb-4">Contact</h4>
+          <ul class="space-y-3">
+            <li class="flex items-center gap-2 text-emerald-300 text-sm"><i class="fas fa-map-marker-alt text-gold-400 w-4"></i>Dharkeynley, Mogadishu</li>
+            <li class="flex items-center gap-2 text-emerald-300 text-sm"><i class="fas fa-phone text-gold-400 w-4"></i>0615539640</li>
+            <li class="flex items-center gap-2 text-emerald-300 text-sm"><i class="fas fa-envelope text-gold-400 w-4"></i>info@furqaan.edu</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-emerald-700 mt-8 pt-8 text-center">
+        <p class="text-emerald-400 text-sm">&copy; 2026 Al-Furqaan Quran School. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const mobileBtn = document.getElementById('mobileBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      mobileBtn.querySelector('i').classList.toggle('fa-bars');
+      mobileBtn.querySelector('i').classList.toggle('fa-times');
+    });
+
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('scroll-show'); });
+    }, observerOptions);
+    document.querySelectorAll('.scroll-hidden').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

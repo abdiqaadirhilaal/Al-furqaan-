@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Dashboard - Al-Furqaan Quran School</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
+            gold: { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207', 800: '#854d0e', 900: '#713f12' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    * { font-family: 'Inter', sans-serif; }
+    .page { display: none; animation: fadeIn 0.4s ease; }
+    .page.active { display: block; }
+    .sidebar-item { transition: all 0.3s ease; cursor: pointer; border-radius: 12px; }
+    .sidebar-item:hover { background: rgba(255,255,255,0.1); }
+    .sidebar-item.active { background: rgba(255,255,255,0.15); border-left: 4px solid #eab308; }
+    .stat-card { transition: all 0.3s ease; }
+    .stat-card:hover { transform: translateY(-3px); }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { background: #f8fafc; padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+    .data-table tr:hover td { background: #f1f5f9; }
+    .form-input { transition: all 0.3s ease; }
+    .form-input:focus { border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.15); }
+    .badge { padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .mobile-sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+    .mobile-sidebar.open { transform: translateX(0); }
+    @media (max-width: 767px) { .sidebar-desktop { display: none; } }
+    @media (min-width: 768px) { .sidebar-mobile-overlay { display: none !important; } }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #059669; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- SIDEBAR - Desktop -->
+  <aside class="sidebar-desktop fixed left-0 top-0 bottom-0 w-64 bg-gradient-to-b from-emerald-800 to-emerald-900 text-white z-30 overflow-y-auto">
+    <div class="p-4 border-b border-white/10">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center"><i class="fas fa-quran text-emerald-900"></i></div>
+        <div>
+          <h2 class="font-bold text-sm">Al-Furqaan</h2>
+          <p class="text-emerald-300 text-[10px]">Manager Panel</p>
+        </div>
+      </a>
+    </div>
+    <nav class="p-3 space-y-1" id="sidebarNav">
+      <div class="sidebar-item active px-4 py-3 flex items-center gap-3 text-sm" data-page="dashboard"><i class="fas fa-chart-pie w-5 text-gold-400"></i>Dashboard</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="register"><i class="fas fa-user-plus w-5 text-gold-400"></i>Register Student</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="students"><i class="fas fa-users w-5 text-gold-400"></i>Students List</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="teachers"><i class="fas fa-chalkboard-user w-5 text-gold-400"></i>Teacher Mgmt</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="teacherAttendance"><i class="fas fa-clipboard-check w-5 text-gold-400"></i>Teacher Attendance</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="studentAttendance"><i class="fas fa-calendar-check w-5 text-gold-400"></i>Student Attendance</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="finance"><i class="fas fa-money-bill-wave w-5 text-gold-400"></i>Finance</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="financeReports"><i class="fas fa-chart-bar w-5 text-gold-400"></i>Finance Reports</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="settings"><i class="fas fa-cog w-5 text-gold-400"></i>Settings</div>
+    </nav>
+    <div class="p-4 border-t border-white/10 mt-4">
+      <button onclick="handleLogout()" class="flex items-center gap-3 text-sm text-emerald-300 hover:text-white transition-colors w-full">
+        <i class="fas fa-sign-out-alt w-5"></i>Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- SIDEBAR - Mobile -->
+  <div class="sidebar-mobile-overlay fixed inset-0 bg-black/50 z-40 hidden" id="mobileOverlay" onclick="toggleMobileSidebar()"></div>
+  <aside class="mobile-sidebar fixed left-0 top-0 bottom-0 w-64 bg-gradient-to-b from-emerald-800 to-emerald-900 text-white z-50 overflow-y-auto" id="mobileSidebar">
+    <div class="p-4 border-b border-white/10 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center"><i class="fas fa-quran text-emerald-900"></i></div>
+        <div><h2 class="font-bold text-sm">Al-Furqaan</h2><p class="text-emerald-300 text-[10px]">Manager Panel</p></div>
+      </div>
+      <button onclick="toggleMobileSidebar()" class="text-white text-xl"><i class="fas fa-times"></i></button>
+    </div>
+    <nav class="p-3 space-y-1" id="mobileSidebarNav">
+      <div class="sidebar-item active px-4 py-3 flex items-center gap-3 text-sm" data-page="dashboard" onclick="navigateTo('dashboard');toggleMobileSidebar()"><i class="fas fa-chart-pie w-5 text-gold-400"></i>Dashboard</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="register" onclick="navigateTo('register');toggleMobileSidebar()"><i class="fas fa-user-plus w-5 text-gold-400"></i>Register Student</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="students" onclick="navigateTo('students');toggleMobileSidebar()"><i class="fas fa-users w-5 text-gold-400"></i>Students List</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="teachers" onclick="navigateTo('teachers');toggleMobileSidebar()"><i class="fas fa-chalkboard-user w-5 text-gold-400"></i>Teacher Mgmt</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="teacherAttendance" onclick="navigateTo('teacherAttendance');toggleMobileSidebar()"><i class="fas fa-clipboard-check w-5 text-gold-400"></i>Teacher Attendance</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="studentAttendance" onclick="navigateTo('studentAttendance');toggleMobileSidebar()"><i class="fas fa-calendar-check w-5 text-gold-400"></i>Student Attendance</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="finance" onclick="navigateTo('finance');toggleMobileSidebar()"><i class="fas fa-money-bill-wave w-5 text-gold-400"></i>Finance</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="financeReports" onclick="navigateTo('financeReports');toggleMobileSidebar()"><i class="fas fa-chart-bar w-5 text-gold-400"></i>Finance Reports</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="settings" onclick="navigateTo('settings');toggleMobileSidebar()"><i class="fas fa-cog w-5 text-gold-400"></i>Settings</div>
+    </nav>
+    <div class="p-4 border-t border-white/10 mt-4">
+      <button onclick="handleLogout()" class="flex items-center gap-3 text-sm text-emerald-300 hover:text-white transition-colors w-full">
+        <i class="fas fa-sign-out-alt w-5"></i>Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="md:ml-64 min-h-screen" id="mainContent">
+    <!-- Top Bar -->
+    <header class="bg-white shadow-sm sticky top-0 z-20">
+      <div class="flex items-center justify-between px-4 lg:px-6 h-16">
+        <div class="flex items-center gap-3">
+          <button onclick="toggleMobileSidebar()" class="md:hidden text-gray-600 text-xl"><i class="fas fa-bars"></i></button>
+          <div>
+            <h3 class="font-bold text-emerald-800 text-lg" id="pageTitle">Dashboard</h3>
+            <p class="text-xs text-gray-400" id="pageSubtitle">Overview of your school</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-gray-500 hidden sm:block" id="currentDateTime"></span>
+          <div class="w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-emerald-600 text-sm"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="p-4 lg:p-6 space-y-6" id="pageContent">
+
+      <!-- ===== DASHBOARD PAGE ===== -->
+      <div class="page active" id="page-dashboard">
+          <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-6">
+          <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-emerald-500">
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Total Students</p>
+            <p class="text-3xl font-bold text-emerald-700 mt-1" id="dashTotalStudents">0</p>
+            <p class="text-xs text-gray-400 mt-1"><i class="fas fa-users text-emerald-500 mr-1"></i> Enrolled</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-gold-500">
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Total Teachers</p>
+            <p class="text-3xl font-bold text-gold-600 mt-1" id="dashTotalTeachers">0</p>
+            <p class="text-xs text-gray-400 mt-1"><i class="fas fa-chalkboard-user text-gold-500 mr-1"></i> Active</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-blue-500">
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Today's Attendance</p>
+            <p class="text-3xl font-bold text-blue-600 mt-1" id="dashTodayAttendance">0</p>
+            <p class="text-xs text-gray-400 mt-1"><i class="fas fa-calendar-day text-blue-500 mr-1"></i> Present Today</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-purple-500">
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Total Payments</p>
+            <p class="text-3xl font-bold text-purple-600 mt-1" id="dashTotalPayments">0</p>
+            <p class="text-xs text-gray-400 mt-1"><i class="fas fa-credit-card text-purple-500 mr-1"></i> All Time</p>
+          </div>
+          <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-pink-500">
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Monthly Income</p>
+            <p class="text-3xl font-bold text-pink-600 mt-1" id="dashMonthlyIncome">$0</p>
+            <p class="text-xs text-gray-400 mt-1"><i class="fas fa-money-bill-wave text-pink-500 mr-1"></i> This Month</p>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl p-6 shadow-sm">
+            <h4 class="font-bold text-emerald-800 mb-4">Recent Students</h4>
+            <div id="dashRecentStudents" class="space-y-3"></div>
+          </div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm">
+            <h4 class="font-bold text-emerald-800 mb-4">Quick Actions</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="navigateTo('register')" class="p-4 bg-emerald-50 rounded-xl text-center hover:bg-emerald-100 transition-colors"><i class="fas fa-user-plus text-emerald-600 text-xl mb-2 block"></i><span class="text-sm font-medium text-emerald-700">Add Student</span></button>
+              <button onclick="navigateTo('finance')" class="p-4 bg-gold-50 rounded-xl text-center hover:bg-gold-100 transition-colors"><i class="fas fa-money-bill text-gold-600 text-xl mb-2 block"></i><span class="text-sm font-medium text-gold-700">Add Payment</span></button>
+              <button onclick="navigateTo('studentAttendance')" class="p-4 bg-blue-50 rounded-xl text-center hover:bg-blue-100 transition-colors"><i class="fas fa-calendar-check text-blue-600 text-xl mb-2 block"></i><span class="text-sm font-medium text-blue-700">Attendance</span></button>
+              <button onclick="navigateTo('students')" class="p-4 bg-purple-50 rounded-xl text-center hover:bg-purple-100 transition-colors"><i class="fas fa-list text-purple-600 text-xl mb-2 block"></i><span class="text-sm font-medium text-purple-700">View Students</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== REGISTER STUDENT PAGE ===== -->
+      <div class="page" id="page-register">
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+            <h3 class="text-xl font-bold text-emerald-800 mb-6">Register New Student</h3>
+            <form id="registerForm" class="space-y-5">
+              <div class="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+                  <input type="text" id="regId" readonly class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Registration Date</label>
+                  <input type="date" id="regDate" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <input type="text" id="regName" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="Student full name">
+              </div>
+              <div class="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Class</label>
+                  <select id="regClass" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none"></select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                  <input type="text" id="regPhone" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="Parent phone">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Parent Name</label>
+                <input type="text" id="regParent" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="Parent/Guardian name">
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg">
+                <i class="fas fa-save mr-2"></i>Register Student
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== STUDENTS LIST PAGE ===== -->
+      <div class="page" id="page-students">
+        <div class="bg-white rounded-2xl shadow-sm">
+          <div class="p-4 lg:p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h3 class="text-xl font-bold text-emerald-800">Students List</h3>
+            <div class="flex gap-3">
+              <input type="text" id="studentSearch" placeholder="Search by name or ID..." class="form-input px-4 py-2 rounded-xl border border-gray-200 focus:outline-none text-sm w-48 lg:w-64" onkeyup="renderStudentsList()">
+              <select id="studentClassFilter" class="form-input px-4 py-2 rounded-xl border border-gray-200 focus:outline-none text-sm" onchange="renderStudentsList()">
+                <option value="">All Classes</option>
+              </select>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Class</th>
+                  <th>Phone</th>
+                  <th>Parent</th>
+                  <th>Registered</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody"></tbody>
+            </table>
+          </div>
+          <div class="p-4 text-center text-gray-400 text-sm" id="studentsEmpty">No students found</div>
+        </div>
+      </div>
+
+      <!-- ===== TEACHER MANAGEMENT PAGE ===== -->
+      <div class="page" id="page-teachers">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <!-- Registration Form -->
+          <div class="bg-white rounded-2xl shadow-sm p-6">
+            <h3 class="text-xl font-bold text-emerald-800 mb-6">Register New Teacher</h3>
+            <form id="teacherRegForm" class="space-y-4">
+              <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Teacher ID</label>
+                  <input type="text" id="tregId" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 focus:outline-none" readonly>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Class</label>
+                  <select id="tregClass" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+                    <option value="">Select Class</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <input type="text" id="tregName" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="Teacher full name">
+              </div>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                  <div class="relative">
+                    <input type="password" id="tregPassword" value="furqaan1234" required class="form-input w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:outline-none" placeholder="Password">
+                    <button type="button" onclick="toggleFieldPassword('tregPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><i class="fas fa-eye"></i></button>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                  <input type="text" id="tregPhone" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="Phone number">
+                </div>
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg">
+                <i class="fas fa-user-plus mr-2"></i>Register Teacher
+              </button>
+            </form>
+          </div>
+          <!-- Teachers Table -->
+          <div class="bg-white rounded-2xl shadow-sm p-6">
+            <h3 class="text-xl font-bold text-emerald-800 mb-6">Current Teachers</h3>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr><th>ID</th><th>Name</th><th>Class</th><th>Phone</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="teachersTableBody"></tbody>
+              </table>
+            </div>
+            <div class="p-4 text-center text-gray-400 text-sm" id="teachersEmpty">No teachers found</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TEACHER ATTENDANCE PAGE ===== -->
+      <div class="page" id="page-teacherAttendance">
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <h3 class="text-xl font-bold text-emerald-800">Teacher Attendance Report</h3>
+            <div class="flex gap-3">
+              <input type="date" id="taDateFilter" class="form-input px-4 py-2 rounded-xl border border-gray-200 focus:outline-none text-sm" onchange="renderTeacherAttendance()">
+              <button onclick="renderTeacherAttendance()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm hover:bg-emerald-700 transition-colors"><i class="fas fa-sync-alt mr-1"></i>Refresh</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-emerald-50 rounded-xl p-4 text-center"><p class="text-2xl font-bold text-emerald-600" id="taPresent">0</p><p class="text-xs text-gray-500">Present</p></div>
+            <div class="bg-gold-50 rounded-xl p-4 text-center"><p class="text-2xl font-bold text-gold-600" id="taLate">0</p><p class="text-xs text-gray-500">Late</p></div>
+            <div class="bg-gray-50 rounded-xl p-4 text-center"><p class="text-2xl font-bold text-gray-600" id="taTotal">0</p><p class="text-xs text-gray-500">Total</p></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr><th>Teacher</th><th>ID</th><th>Class</th><th>Date</th><th>Time</th><th>Status</th></tr>
+              </thead>
+              <tbody id="teacherAttendanceBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== STUDENT ATTENDANCE PAGE ===== -->
+      <div class="page" id="page-studentAttendance">
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <h3 class="text-xl font-bold text-emerald-800">Student Attendance Reports</h3>
+            <div class="flex flex-wrap gap-3">
+              <input type="date" id="saDateFilter" class="form-input px-4 py-2 rounded-xl border border-gray-200 focus:outline-none text-sm">
+              <select id="saClassFilter" class="form-input px-4 py-2 rounded-xl border border-gray-200 focus:outline-none text-sm" onchange="renderStudentAttendance()">
+                <option value="">All Classes</option>
+              </select>
+              <button onclick="renderStudentAttendance()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm hover:bg-emerald-700"><i class="fas fa-search mr-1"></i>Search</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-emerald-50 rounded-xl p-4 text-center"><p class="text-2xl font-bold text-emerald-600" id="saTotal">0</p><p class="text-xs text-gray-500">Total</p></div>
+            <div class="bg-green-50 rounded-xl p-4 text-center"><p class="text-2xl font-bold text-green-600" id="saPresent">0</p><p class="text-xs text-gray-500">Present</p></div>
+            <div class="bg-red-50 rounded-xl p-4 text-center"><p class="text-2xl font-bold text-red-600" id="saAbsent">0</p><p class="text-xs text-gray-500">Absent</p></div>
+            <div class="bg-yellow-50 rounded-xl p-4 text-center"><p class="text-2xl font-bold text-yellow-600" id="saLeave">0</p><p class="text-xs text-gray-500">Leave</p></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr><th>Student</th><th>ID</th><th>Class</th><th>Date</th><th>Time</th><th>Status</th><th>%</th></tr>
+              </thead>
+              <tbody id="studentAttendanceBody"></tbody>
+            </table>
+          </div>
+          <div class="p-4 text-center text-gray-400 text-sm" id="saEmpty">No records found</div>
+        </div>
+      </div>
+
+      <!-- ===== FINANCE PAGE ===== -->
+      <div class="page" id="page-finance">
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+            <h3 class="text-xl font-bold text-emerald-800 mb-6">Add Payment</h3>
+            <form id="financeForm" class="space-y-5">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Select Class</label>
+                <select id="finClass" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" onchange="loadFinanceStudents()">
+                  <option value="">Choose a class...</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Student Name</label>
+                <select id="finStudent" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+                  <option value="">First select a class</option>
+                </select>
+              </div>
+              <div class="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Amount Paid ($)</label>
+                  <input type="number" id="finAmount" required min="1" step="0.01" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="0.00">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                  <input type="date" id="finDate" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none bg-gray-50" readonly>
+                </div>
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg">
+                <i class="fas fa-plus-circle mr-2"></i>Save Payment
+              </button>
+            </form>
+            <div class="mt-8">
+              <h4 class="font-bold text-emerald-800 mb-4">Recent Payments</h4>
+              <div id="recentPayments" class="space-y-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== FINANCE REPORTS PAGE ===== -->
+      <div class="page" id="page-financeReports">
+        <div class="bg-white rounded-2xl shadow-sm p-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <h3 class="text-xl font-bold text-emerald-800">Finance Reports</h3>
+            <div class="flex gap-2">
+              <button onclick="loadFinanceReport('daily')" class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-xl text-sm font-medium hover:bg-emerald-200 transition-colors">Daily</button>
+              <button onclick="loadFinanceReport('weekly')" class="bg-gold-100 text-gold-700 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gold-200 transition-colors">Weekly</button>
+              <button onclick="loadFinanceReport('monthly')" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-200 transition-colors">Monthly</button>
+              <button onclick="loadFinanceReport('all')" class="bg-purple-100 text-purple-700 px-4 py-2 rounded-xl text-sm font-medium hover:bg-purple-200 transition-colors">All</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+            <div class="bg-emerald-50 rounded-xl p-4"><p class="text-2xl font-bold text-emerald-600" id="frTotal">$0</p><p class="text-xs text-gray-500">Total Revenue</p></div>
+            <div class="bg-gold-50 rounded-xl p-4"><p class="text-2xl font-bold text-gold-600" id="frCount">0</p><p class="text-xs text-gray-500">Transactions</p></div>
+            <div class="bg-blue-50 rounded-xl p-4"><p class="text-2xl font-bold text-blue-600" id="frClassCount">0</p><p class="text-xs text-gray-500">Classes</p></div>
+            <div class="bg-purple-50 rounded-xl p-4"><p class="text-2xl font-bold text-purple-600" id="frStudentCount">0</p><p class="text-xs text-gray-500">Students</p></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr><th>Student</th><th>Class</th><th>Amount</th><th>Date</th><th>Recorded By</th></tr>
+              </thead>
+              <tbody id="financeReportsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS PAGE ===== -->
+      <div class="page" id="page-settings">
+        <div class="max-w-2xl mx-auto">
+          <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+            <h3 class="text-xl font-bold text-emerald-800 mb-6">School Settings</h3>
+            <form id="settingsForm" class="space-y-5">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">School Name</label>
+                <input type="text" id="setName" value="Al-Furqaan Quran School" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Manager Password</label>
+                <input type="password" id="setPassword" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="New password">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Attendance Late Time</label>
+                <input type="time" id="setLateTime" value="06:30" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg">
+                <i class="fas fa-save mr-2"></i>Save Settings
+              </button>
+            </form>
+            <!-- Data Backup -->
+            <div class="mt-8 p-4 bg-blue-50 rounded-xl">
+              <h4 class="font-bold text-blue-700 mb-2"><i class="fas fa-database mr-2"></i>Data Backup & Restore</h4>
+              <p class="text-sm text-blue-600 mb-4">Export your data to a file for permanent backup. Import to restore data after browser cache is cleared.</p>
+              <div class="flex flex-wrap gap-3">
+                <button onclick="exportData()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors inline-flex items-center gap-2">
+                  <i class="fas fa-download"></i>Export Data
+                </button>
+                <label class="bg-green-600 text-white px-5 py-2.5 rounded-xl text-sm hover:bg-green-700 transition-colors cursor-pointer inline-flex items-center gap-2">
+                  <i class="fas fa-upload"></i>Import Data
+                  <input type="file" id="importFileInput" accept=".json" onchange="importData(event)" class="hidden">
+                </label>
+              </div>
+            </div>
+            <div class="mt-4 p-4 bg-red-50 rounded-xl">
+              <h4 class="font-bold text-red-700 mb-2"><i class="fas fa-exclamation-triangle mr-2"></i>Danger Zone</h4>
+              <button onclick="resetAllData()" class="bg-red-600 text-white px-6 py-2 rounded-xl text-sm hover:bg-red-700 transition-colors"><i class="fas fa-trash mr-2"></i>Reset All Data</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script>
+    // ======================== AUTH CHECK ========================
+    const currentUser = Auth.requireAuth('manager');
+    if (!currentUser) { /* will redirect */ }
+
+    // ======================== STATE ========================
+    let financePeriod = 'monthly';
+
+    // ======================== NAVIGATION ========================
+    const pageTitles = {
+      dashboard: ['Dashboard', 'Overview of your school'],
+      register: ['Register Student', 'Add a new student to the system'],
+      students: ['Students List', 'View and manage all students'],
+      teachers: ['Teacher Management', 'Manage teacher accounts'],
+      teacherAttendance: ['Teacher Attendance Report', 'View teacher attendance records'],
+      studentAttendance: ['Student Attendance Reports', 'View student attendance records'],
+      finance: ['Finance', 'Manage payments and transactions'],
+      financeReports: ['Finance Reports', 'View financial summaries and reports'],
+      settings: ['Settings', 'Configure school settings']
+    };
+
+    function navigateTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll(`.sidebar-item[data-page="${page}"]`).forEach(i => i.classList.add('active'));
+      document.getElementById('pageTitle').textContent = pageTitles[page]?.[0] || page;
+      document.getElementById('pageSubtitle').textContent = pageTitles[page]?.[1] || '';
+      if (page === 'dashboard') refreshDashboard();
+      if (page === 'register') loadRegisterForm();
+      if (page === 'students') renderStudentsList();
+      if (page === 'teachers') renderTeachersList();
+      if (page === 'teacherAttendance') renderTeacherAttendance();
+      if (page === 'studentAttendance') renderStudentAttendance();
+      if (page === 'finance') { loadFinanceClasses(); renderRecentPayments(); }
+      if (page === 'financeReports') loadFinanceReport(financePeriod);
+    }
+
+    document.querySelectorAll('#sidebarNav .sidebar-item, #mobileSidebarNav .sidebar-item').forEach(item => {
+      item.addEventListener('click', function() { navigateTo(this.dataset.page); });
+    });
+
+    function toggleMobileSidebar() {
+      document.getElementById('mobileSidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('hidden');
+    }
+
+    // ======================== DASHBOARD ========================
+    function refreshDashboard() {
+      const students = DB.getStudents();
+      const teachers = DB.getTeachers();
+      const tAtt = DB.getTeacherAttendance();
+      const today = Utils.getToday();
+      const todayAtt = tAtt.filter(a => a.date === today && a.status === 'PRESENT').length;
+
+      const payments = DB.getPayments();
+      const monthAgo = new Date();
+      monthAgo.setDate(monthAgo.getDate() - 30);
+      const monthStr = monthAgo.toISOString().split('T')[0];
+      const monthPayments = payments.filter(p => p.date >= monthStr);
+      const monthIncome = monthPayments.reduce((sum, p) => sum + Number(p.amount), 0);
+
+      document.getElementById('dashTotalStudents').textContent = students.length;
+      document.getElementById('dashTotalTeachers').textContent = teachers.length;
+      document.getElementById('dashTodayAttendance').textContent = todayAtt;
+      document.getElementById('dashTotalPayments').textContent = payments.length;
+      document.getElementById('dashMonthlyIncome').textContent = Utils.formatCurrency(monthIncome);
+
+      // Recent students
+      const recent = students.slice(-5).reverse();
+      const container = document.getElementById('dashRecentStudents');
+      if (recent.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-sm">No students yet</p>';
+      } else {
+        container.innerHTML = recent.map(s => `
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center"><i class="fas fa-user text-emerald-600 text-xs"></i></div>
+              <div><p class="text-sm font-medium text-emerald-800">${s.name}</p><p class="text-xs text-gray-400">${s.id} - ${s.class}</p></div>
+            </div>
+            <span class="text-xs text-gray-400">${Utils.formatDate(s.registrationDate)}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    // ======================== REGISTER STUDENT ========================
+    function loadRegisterForm() {
+      const classes = DB.getClasses();
+      const sel = document.getElementById('regClass');
+      sel.innerHTML = classes.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      const students = DB.getStudents();
+      const ids = students.map(s => parseInt(s.id.replace('STU', '')));
+      const nextNum = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+      document.getElementById('regId').value = `STU${String(nextNum).padStart(4, '0')}`;
+
+      document.getElementById('regDate').value = Utils.getToday();
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const student = {
+        id: document.getElementById('regId').value,
+        name: document.getElementById('regName').value.trim(),
+        class: document.getElementById('regClass').value,
+        phone: document.getElementById('regPhone').value.trim(),
+        parent: document.getElementById('regParent').value.trim(),
+        registrationDate: document.getElementById('regDate').value,
+        status: 'active'
+      };
+      DB.addStudent(student);
+      Utils.showToast(`Student ${student.name} registered successfully!`);
+      this.reset();
+      loadRegisterForm();
+      refreshDashboard();
+    });
+
+    // ======================== STUDENTS LIST ========================
+    function renderStudentsList() {
+      let students = DB.getStudents();
+      const search = document.getElementById('studentSearch').value.toLowerCase();
+      const classFilter = document.getElementById('studentClassFilter').value;
+
+      if (search) students = students.filter(s => s.name.toLowerCase().includes(search) || s.id.toLowerCase().includes(search));
+      if (classFilter) students = students.filter(s => s.class === classFilter);
+
+      const tbody = document.getElementById('studentsTableBody');
+      const empty = document.getElementById('studentsEmpty');
+
+      if (students.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      tbody.innerHTML = students.map(s => `
+        <tr>
+          <td class="font-mono text-xs">${s.id}</td>
+          <td class="font-medium text-emerald-800">${s.name}</td>
+          <td><span class="badge bg-emerald-100 text-emerald-700">${s.class}</span></td>
+          <td>${s.phone}</td>
+          <td>${s.parent}</td>
+          <td class="text-sm text-gray-500">${Utils.formatDate(s.registrationDate)}</td>
+          <td>
+            <button onclick="deleteStudent('${s.id}')" class="text-red-500 hover:text-red-700 text-sm"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function deleteStudent(id) {
+      if (!confirm('Delete this student?')) return;
+      DB.deleteStudent(id);
+      renderStudentsList();
+      refreshDashboard();
+      Utils.showToast('Student deleted', 'warning');
+    }
+
+    // ======================== TEACHERS LIST ========================
+    function renderTeachersList() {
+      const teachers = DB.getTeachers();
+      const tbody = document.getElementById('teachersTableBody');
+      const empty = document.getElementById('teachersEmpty');
+      if (teachers.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      tbody.innerHTML = teachers.map(t => `
+        <tr>
+          <td class="font-mono text-xs">${t.id}</td>
+          <td class="font-medium text-emerald-800">${t.name}</td>
+          <td><span class="badge bg-emerald-100 text-emerald-700">${t.class}</span></td>
+          <td>${t.phone || '-'}</td>
+          <td>
+            <button onclick="deleteTeacher('${t.id}')" class="text-red-500 hover:text-red-700 text-sm" title="Delete teacher"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function deleteTeacher(id) {
+      if (!confirm('Delete this teacher? This cannot be undone.')) return;
+      DB.deleteTeacher(id);
+      renderTeachersList();
+      loadTeacherRegForm();
+      refreshDashboard();
+      Utils.showToast('Teacher deleted', 'warning');
+    }
+
+    // ======================== TEACHER REGISTRATION ========================
+    function loadTeacherRegForm() {
+      const classes = DB.getClasses();
+      const teachers = DB.getTeachers();
+      const assignedClasses = teachers.map(t => t.class);
+      const availableClasses = classes.filter(c => !assignedClasses.includes(c));
+
+      const sel = document.getElementById('tregClass');
+      if (availableClasses.length === 0) {
+        sel.innerHTML = '<option value="">No classes available</option>';
+      } else {
+        sel.innerHTML = '<option value="">Select Class</option>' +
+          availableClasses.map(c => `<option value="${c}">${c}</option>`).join('');
+      }
+
+      // Auto-generate teacher ID
+      const existingIds = teachers.map(t => parseInt(t.id.replace('T', '')));
+      const nextNum = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+      document.getElementById('tregId').value = `T${String(nextNum).padStart(3, '0')}`;
+    }
+
+    document.getElementById('teacherRegForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const teacher = {
+        id: document.getElementById('tregId').value,
+        name: document.getElementById('tregName').value.trim(),
+        password: document.getElementById('tregPassword').value,
+        class: document.getElementById('tregClass').value,
+        phone: document.getElementById('tregPhone').value.trim() || '-',
+        email: ''
+      };
+      const result = DB.addTeacher(teacher);
+      if (result.error) {
+        Utils.showToast(result.error, 'error');
+        return;
+      }
+      Utils.showToast(`Teacher ${teacher.name} registered successfully!`);
+      this.reset();
+      loadTeacherRegForm();
+      renderTeachersList();
+      refreshDashboard();
+    });
+
+    // ======================== TEACHER ATTENDANCE ========================
+    function renderTeacherAttendance() {
+      let records = DB.getTeacherAttendance();
+      const dateFilter = document.getElementById('taDateFilter').value;
+      if (dateFilter) records = records.filter(a => a.date === dateFilter);
+
+      records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      const present = records.filter(a => a.status === 'PRESENT').length;
+      const late = records.filter(a => a.status === 'LATE').length;
+
+      document.getElementById('taPresent').textContent = present;
+      document.getElementById('taLate').textContent = late;
+      document.getElementById('taTotal').textContent = records.length;
+
+      const tbody = document.getElementById('teacherAttendanceBody');
+      if (records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-400 py-8">No attendance records found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = records.map(r => `
+        <tr>
+          <td class="font-medium">${r.teacherName}</td>
+          <td class="font-mono text-xs">${r.teacherId}</td>
+          <td>${r.className}</td>
+          <td class="text-sm">${Utils.formatDate(r.date)}</td>
+          <td class="text-sm">${Utils.formatTime(r.time)}</td>
+          <td><span class="badge ${r.status === 'PRESENT' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${r.status}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // ======================== STUDENT ATTENDANCE ========================
+    function renderStudentAttendance() {
+      let records = DB.getStudentAttendance();
+      const dateFilter = document.getElementById('saDateFilter').value;
+      const classFilter = document.getElementById('saClassFilter').value;
+
+      if (dateFilter) records = records.filter(a => a.date === dateFilter);
+      if (classFilter) records = records.filter(a => a.class === classFilter);
+
+      records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      const total = records.length;
+      const present = records.filter(a => a.status === 'present').length;
+      const absent = records.filter(a => a.status === 'absent').length;
+      const leave = records.filter(a => a.status === 'leave').length;
+
+      document.getElementById('saTotal').textContent = total;
+      document.getElementById('saPresent').textContent = present;
+      document.getElementById('saAbsent').textContent = absent;
+      document.getElementById('saLeave').textContent = leave;
+
+      const tbody = document.getElementById('studentAttendanceBody');
+      const empty = document.getElementById('saEmpty');
+
+      if (total === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      // Calculate percentages per student
+      const uniqueStudents = [...new Set(records.map(r => r.studentId))];
+      const percentages = {};
+      uniqueStudents.forEach(sid => {
+        const sRecords = records.filter(r => r.studentId === sid);
+        const sPresent = sRecords.filter(r => r.status === 'present').length;
+        percentages[sid] = Math.round((sPresent / sRecords.length) * 100);
+      });
+
+      tbody.innerHTML = records.slice(0, 50).map(r => {
+        const pct = percentages[r.studentId] || 0;
+        const statusColors = { present: 'bg-green-100 text-green-700', absent: 'bg-red-100 text-red-700', leave: 'bg-yellow-100 text-yellow-700' };
+        const statusLabels = { present: 'Present', absent: 'Absent', leave: 'Leave' };
+        return `<tr>
+          <td class="font-medium">${r.studentName}</td>
+          <td class="font-mono text-xs">${r.studentId}</td>
+          <td>${r.class}</td>
+          <td class="text-sm">${Utils.formatDate(r.date)}</td>
+          <td class="text-sm">${Utils.formatTime(r.time)}</td>
+          <td><span class="badge ${statusColors[r.status] || 'bg-gray-100'}">${statusLabels[r.status] || r.status}</span></td>
+          <td><div class="flex items-center gap-2"><div class="flex-1 bg-gray-200 rounded-full h-2"><div class="bg-emerald-500 rounded-full h-2" style="width:${pct}%"></div></div><span class="text-xs font-medium ${pct >= 75 ? 'text-emerald-600' : 'text-red-600'}">${pct}%</span></div></td>
+        </tr>`;
+      }).join('');
+    }
+
+    // ======================== FINANCE ========================
+    function loadFinanceStudents() {
+      const classVal = document.getElementById('finClass').value;
+      const sel = document.getElementById('finStudent');
+      if (!classVal) {
+        sel.innerHTML = '<option value="">First select a class</option>';
+        return;
+      }
+      const students = DB.getStudentsByClass(classVal);
+      sel.innerHTML = '<option value="">Select student...</option>' +
+        students.map(s => `<option value="${s.id}">${s.name} (${s.id})</option>`).join('');
+    }
+
+    function loadFinanceClasses() {
+      const classes = DB.getClasses();
+      const sel = document.getElementById('finClass');
+      sel.innerHTML = '<option value="">Choose a class...</option>' +
+        classes.map(c => `<option value="${c}">${c}</option>`).join('');
+      document.getElementById('finDate').value = Utils.getToday();
+    }
+
+    document.getElementById('financeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('finStudent').value;
+      const classVal = document.getElementById('finClass').value;
+      if (!classVal) { Utils.showToast('Please select a class', 'error'); return; }
+      const student = DB.getStudentById(studentId);
+      if (!student) { Utils.showToast('Please select a student', 'error'); return; }
+      const amount = parseFloat(document.getElementById('finAmount').value);
+      if (!amount || amount <= 0) { Utils.showToast('Please enter a valid amount', 'error'); return; }
+
+      const payment = {
+        studentId: student.id,
+        studentName: student.name,
+        className: classVal,
+        amount: amount,
+        date: document.getElementById('finDate').value,
+        recordedBy: 'Manager'
+      };
+      const result = DB.addPayment(payment);
+      if (result.error) {
+        Utils.showToast(result.error, 'error');
+        return;
+      }
+      Utils.showToast(`Payment of $${payment.amount} saved for ${student.name}`);
+      this.reset();
+      loadFinanceClasses();
+      renderRecentPayments();
+      refreshDashboard();
+    });
+
+    function renderRecentPayments() {
+      const payments = DB.getPayments().slice(-5).reverse();
+      const container = document.getElementById('recentPayments');
+      if (payments.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-sm">No payments yet</p>';
+        return;
+      }
+      container.innerHTML = payments.map(p => `
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+          <div>
+            <p class="text-sm font-medium text-emerald-800">${p.studentName}</p>
+            <p class="text-xs text-gray-400">${p.className || ''} | ${Utils.formatDate(p.date)}</p>
+          </div>
+          <span class="font-bold text-emerald-600">${Utils.formatCurrency(p.amount)}</span>
+        </div>
+      `).join('');
+    }
+
+    // ======================== FINANCE REPORTS ========================
+    function loadFinanceReport(period) {
+      financePeriod = period;
+      const stats = DB.getFinanceStats(period);
+      document.getElementById('frTotal').textContent = Utils.formatCurrency(stats.total);
+      document.getElementById('frCount').textContent = stats.count;
+
+      const classSet = new Set(stats.records.map(r => r.className || '-'));
+      const studentSet = new Set(stats.records.map(r => r.studentName));
+      document.getElementById('frClassCount').textContent = classSet.size;
+      document.getElementById('frStudentCount').textContent = studentSet.size;
+
+      const tbody = document.getElementById('financeReportsBody');
+      if (stats.records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-400 py-8">No records found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = stats.records.map(r => `
+        <tr>
+          <td class="font-medium text-emerald-800">${r.studentName}</td>
+          <td><span class="badge bg-emerald-100 text-emerald-700">${r.className || '-'}</span></td>
+          <td class="font-bold text-emerald-600">${Utils.formatCurrency(r.amount)}</td>
+          <td class="text-sm text-gray-500">${Utils.formatDate(r.date)}</td>
+          <td class="text-sm text-gray-500">${r.recordedBy || 'Manager'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ======================== SETTINGS ========================
+    document.getElementById('settingsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newPassword = document.getElementById('setPassword').value;
+      if (newPassword) {
+        const manager = DB.getManager();
+        manager.password = newPassword;
+        localStorage.setItem(DB._prefix + 'manager', JSON.stringify(manager));
+        Utils.showToast('Password updated successfully');
+      } else {
+        Utils.showToast('No changes made', 'info');
+      }
+    });
+
+    function resetAllData() {
+      if (!confirm('Are you sure you want to reset ALL data? This cannot be undone.')) return;
+      if (!confirm('REALLY? All students, attendance, payments will be lost!')) return;
+      localStorage.removeItem(DB._prefix + 'initialized');
+      DB.init();
+      Utils.showToast('All data has been reset');
+      window.location.reload();
+    }
+
+    // ======================== DATA EXPORT / IMPORT ========================
+    function exportData() {
+      const data = {};
+      const prefix = DB._prefix;
+      const keys = Object.keys(localStorage).filter(k => k.startsWith(prefix));
+      keys.forEach(k => { data[k] = localStorage.getItem(k); });
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `furqaan-backup-${Utils.getToday()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      Utils.showToast('Data exported successfully!', 'success');
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!confirm('Import will REPLACE all current data. Continue?')) {
+        event.target.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          const prefix = DB._prefix;
+          const imported = Object.keys(data).filter(k => k.startsWith(prefix)).length;
+          Object.keys(data).forEach(k => { localStorage.setItem(k, data[k]); });
+          Utils.showToast(`Imported ${imported} records successfully! Reloading...`, 'success');
+          event.target.value = '';
+          setTimeout(() => window.location.reload(), 1500);
+        } catch (err) {
+          Utils.showToast('Invalid backup file', 'error');
+          event.target.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function handleLogout() {
+      Auth.logout();
+      window.location.href = 'login.html';
+    }
+
+    // ======================== PASSWORD TOGGLE ========================
+    function toggleFieldPassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    // ======================== CLOCK ========================
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', {
+        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // ======================== INIT ========================
+    // Load classes in filters
+    function loadClassFilters() {
+      const classes = DB.getClasses();
+      ['studentClassFilter', 'saClassFilter'].forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) {
+          sel.innerHTML = '<option value="">All Classes</option>' +
+            classes.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+      });
+    }
+
+    loadClassFilters();
+    loadRegisterForm();
+    loadTeacherRegForm();
+    refreshDashboard();
+    renderStudentsList();
+    renderTeachersList();
+    renderTeacherAttendance();
+    renderStudentAttendance();
+    loadFinanceClasses();
+    renderRecentPayments();
+    loadFinanceReport('monthly');
+
+    // Set default date filters
+    document.getElementById('taDateFilter').value = Utils.getToday();
+    document.getElementById('saDateFilter').value = Utils.getToday();
+  </script>
+</body>
+</html>
