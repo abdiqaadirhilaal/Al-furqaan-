@@ -420,6 +420,9 @@
             <div class="bg-blue-50 rounded-xl p-4"><p class="text-2xl font-bold text-blue-600" id="frClassCount">0</p><p class="text-xs text-gray-500">Classes</p></div>
             <div class="bg-purple-50 rounded-xl p-4"><p class="text-2xl font-bold text-purple-600" id="frStudentCount">0</p><p class="text-xs text-gray-500">Students</p></div>
           </div>
+          <div class="relative h-48 mb-6">
+            <canvas id="financeChart"></canvas>
+          </div>
           <div class="overflow-x-auto">
             <table class="data-table">
               <thead>
@@ -443,7 +446,12 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Manager Password</label>
-                <input type="password" id="setPassword" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none" placeholder="New password">
+                <div class="relative">
+                  <input type="password" id="setPassword" class="form-input w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:outline-none" placeholder="New password">
+                  <button type="button" onclick="toggleFieldPassword('setPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Attendance Late Time</label>
@@ -501,6 +509,25 @@
 
     </div>
   </main>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4" style="display:none">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 lg:p-8 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="text-xl font-bold text-emerald-800" id="editModalTitle">Edit</h4>
+        <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="editForm" onsubmit="saveEdit(event)" class="space-y-4">
+        <input type="hidden" id="editType">
+        <input type="hidden" id="editId">
+        <div id="editFields"></div>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="flex-1 bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all"><i class="fas fa-save mr-2"></i>Save</button>
+          <button type="button" onclick="closeEditModal()" class="flex-1 bg-gray-100 text-gray-600 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="js/data.js"></script>
   <script src="js/sync.js"></script>
@@ -649,7 +676,10 @@
           <td>${s.parent}</td>
           <td class="text-sm text-gray-500">${Utils.formatDate(s.registrationDate)}</td>
           <td>
-            <button onclick="deleteStudent('${s.id}')" class="text-red-500 hover:text-red-700 text-sm"><i class="fas fa-trash"></i></button>
+            <div class="flex gap-2">
+              <button onclick="editStudent('${s.id}')" class="text-blue-500 hover:text-blue-700 text-sm"><i class="fas fa-edit"></i></button>
+              <button onclick="deleteStudent('${s.id}')" class="text-red-500 hover:text-red-700 text-sm"><i class="fas fa-trash"></i></button>
+            </div>
           </td>
         </tr>
       `).join('');
@@ -661,6 +691,109 @@
       renderStudentsList();
       refreshDashboard();
       Utils.showToast('Student deleted', 'warning');
+    }
+
+    function editStudent(id) {
+      const students = DB.getStudents();
+      const s = students.find(st => st.id === id);
+      if (!s) return;
+      document.getElementById('editType').value = 'student';
+      document.getElementById('editId').value = id;
+      document.getElementById('editModalTitle').textContent = 'Edit Student - ' + id;
+      const classes = DB.getClasses();
+      document.getElementById('editFields').innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <input type="text" id="editName" value="${s.name.replace(/"/g, '&quot;')}" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+          <select id="editClass" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+            ${classes.map(c => `<option value="${c}" ${c === s.class ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <input type="text" id="editPhone" value="${(s.phone || '').replace(/"/g, '&quot;')}" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Parent</label>
+          <input type="text" id="editParent" value="${(s.parent || '').replace(/"/g, '&quot;')}" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+      `;
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function editTeacher(id) {
+      const teachers = DB.getTeachers();
+      const t = teachers.find(te => te.id === id);
+      if (!t) return;
+      document.getElementById('editType').value = 'teacher';
+      document.getElementById('editId').value = id;
+      document.getElementById('editModalTitle').textContent = 'Edit Teacher - ' + id;
+      const classes = DB.getClasses();
+      const takenClasses = new Set(teachers.filter(te => te.id !== id).map(te => te.class));
+      const available = classes.filter(c => !takenClasses.has(c));
+      document.getElementById('editFields').innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <input type="text" id="editName" value="${t.name.replace(/"/g, '&quot;')}" required class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+          <select id="editClass" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+            ${available.map(c => `<option value="${c}" ${c === t.class ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <input type="text" id="editPhone" value="${(t.phone || '').replace(/"/g, '&quot;')}" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" id="editEmail" value="${(t.email || '').replace(/"/g, '&quot;')}" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+      `;
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    function saveEdit(e) {
+      e.preventDefault();
+      const type = document.getElementById('editType').value;
+      const id = document.getElementById('editId').value;
+      const name = document.getElementById('editName').value.trim();
+      const cls = document.getElementById('editClass').value;
+      const phone = (document.getElementById('editPhone')?.value || '').trim();
+      if (type === 'student') {
+        const parent = (document.getElementById('editParent')?.value || '').trim();
+        const students = DB.getStudents();
+        const idx = students.findIndex(s => s.id === id);
+        if (idx === -1) return;
+        students[idx].name = name;
+        students[idx].class = cls;
+        students[idx].phone = phone;
+        students[idx].parent = parent;
+        DB.saveCollection('students', students);
+        Utils.showToast('Student updated!', 'success');
+        renderStudentsList();
+      } else if (type === 'teacher') {
+        const email = (document.getElementById('editEmail')?.value || '').trim();
+        const teachers = DB.getTeachers();
+        const idx = teachers.findIndex(t => t.id === id);
+        if (idx === -1) return;
+        teachers[idx].name = name;
+        teachers[idx].class = cls;
+        teachers[idx].phone = phone;
+        teachers[idx].email = email;
+        DB.saveCollection('teachers', teachers);
+        Utils.showToast('Teacher updated!', 'success');
+        renderTeachersList();
+      }
+      closeEditModal();
     }
 
     // ======================== TEACHERS LIST ========================
@@ -681,7 +814,8 @@
           <td><span class="badge bg-emerald-100 text-emerald-700">${t.class}</span></td>
           <td>${t.phone || '-'}</td>
           <td>
-            <button onclick="deleteTeacher('${t.id}')" class="text-red-500 hover:text-red-700 text-sm" title="Delete teacher"><i class="fas fa-trash"></i></button>
+                <button onclick="editTeacher('${t.id}')" class="text-blue-500 hover:text-blue-700 text-sm" title="Edit teacher"><i class="fas fa-edit"></i></button>
+                <button onclick="deleteTeacher('${t.id}')" class="text-red-500 hover:text-red-700 text-sm" title="Delete teacher"><i class="fas fa-trash"></i></button>
           </td>
         </tr>
       `).join('');
@@ -897,6 +1031,8 @@
     }
 
     // ======================== FINANCE REPORTS ========================
+    let financeChartInstance = null;
+
     function loadFinanceReport(period) {
       financePeriod = period;
       const stats = DB.getFinanceStats(period);
@@ -911,6 +1047,7 @@
       const tbody = document.getElementById('financeReportsBody');
       if (stats.records.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-400 py-8">No records found</td></tr>';
+        renderFinanceChart([], period);
         return;
       }
       tbody.innerHTML = stats.records.map(r => `
@@ -922,20 +1059,82 @@
           <td class="text-sm text-gray-500">${r.recordedBy || 'Manager'}</td>
         </tr>
       `).join('');
+
+      // Render chart
+      renderFinanceChart(stats.records, period);
+    }
+
+    function renderFinanceChart(records, period) {
+      if (typeof Chart === 'undefined') return;
+      const ctx = document.getElementById('financeChart');
+      if (!ctx) return;
+
+      if (financeChartInstance) financeChartInstance.destroy();
+
+      // Aggregate by date
+      const byDate = {};
+      records.forEach(r => {
+        byDate[r.date] = (byDate[r.date] || 0) + Number(r.amount);
+      });
+
+      let labels, data;
+      if (period === 'daily') {
+        // Show hourly buckets (not applicable), default to last 7 days
+        const days = [];
+        const amounts = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const key = d.toISOString().split('T')[0];
+          days.push(key);
+          amounts.push(byDate[key] || 0);
+        }
+        labels = days;
+        data = amounts;
+      } else {
+        // Show daily amounts sorted
+        const sorted = Object.entries(byDate).sort((a, b) => a[0].localeCompare(b[0]));
+        labels = sorted.map(s => Utils.formatDate(s[0]));
+        data = sorted.map(s => s[1]);
+      }
+
+      financeChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Daily Revenue',
+            data: data,
+            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+            borderColor: '#059669',
+            borderWidth: 2,
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { callback: v => '$' + v } },
+            x: { ticks: { maxRotation: 45, font: { size: 10 } } }
+          }
+        }
+      });
     }
 
     // ======================== SETTINGS ========================
     document.getElementById('settingsForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const newPassword = document.getElementById('setPassword').value;
+      const lateTime = document.getElementById('setLateTime').value;
       if (newPassword) {
         const manager = DB.getManager();
         manager.password = newPassword;
         localStorage.setItem(DB._prefix + 'manager', JSON.stringify(manager));
-        Utils.showToast('Password updated successfully');
-      } else {
-        Utils.showToast('No changes made', 'info');
       }
+      DB.setLateTime(lateTime);
+      Utils.showToast('Settings saved successfully');
     });
 
     function resetAllData() {
@@ -1098,6 +1297,15 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // ======================== DASHBOARD AUTO-REFRESH ========================
+    setInterval(() => {
+      const dashPage = document.getElementById('page-dashboard');
+      if (dashPage && dashPage.classList.contains('active')) refreshDashboard();
+    }, 30000);
+
+    // ======================== LOAD SETTINGS ========================
+    document.getElementById('setLateTime').value = DB.getLateTime();
 
     // ======================== INIT ========================
     // Load classes in filters

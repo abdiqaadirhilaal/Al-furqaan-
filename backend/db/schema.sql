@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS teacher_attendance (
   date DATE NOT NULL,
   time TIME NOT NULL,
   status VARCHAR(20) NOT NULL,
-  timestamp TIMESTAMPTZ DEFAULT NOW()
+  timestamp TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(teacher_id, date)
 );
 
 CREATE TABLE IF NOT EXISTS student_attendance (
@@ -50,7 +51,8 @@ CREATE TABLE IF NOT EXISTS student_attendance (
   date DATE NOT NULL,
   time TIME NOT NULL,
   status VARCHAR(20) NOT NULL,
-  timestamp TIMESTAMPTZ DEFAULT NOW()
+  timestamp TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(student_id, date)
 );
 
 CREATE TABLE IF NOT EXISTS payments (

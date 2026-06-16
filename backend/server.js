@@ -195,12 +195,21 @@ app.get('/api/attendance/teacher', authMiddleware, async (req, res) => {
 
 app.post('/api/attendance/teacher', authMiddleware, async (req, res) => {
   try {
-    const { teacherId, teacherName, className } = req.body;
+    const { teacherId, teacherName, className, date: reqDate, time: reqTime, status: reqStatus } = req.body;
     const now = new Date();
-    const date = now.toISOString().split('T')[0];
-    const time = now.toTimeString().split(' ')[0].slice(0, 5);
+    const date = reqDate || now.toISOString().split('T')[0];
+    const time = reqTime || now.toTimeString().split(' ')[0].slice(0, 5);
 
-    // Check if already marked today
+    // For sync (explicit status provided), upsert
+    if (reqStatus) {
+      await pool.query(
+        'INSERT INTO teacher_attendance (teacher_id, teacher_name, class_name, date, time, status) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING',
+        [teacherId, teacherName, className, date, time, reqStatus]
+      );
+      return res.json({ synced: true, teacherId, date, status: reqStatus });
+    }
+
+    // Check if already marked today (live marking)
     const existing = await pool.query(
       'SELECT * FROM teacher_attendance WHERE teacher_id = $1 AND date = $2',
       [teacherId, date]
@@ -209,9 +218,10 @@ app.post('/api/attendance/teacher', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Already marked today', record: existing.rows[0] });
     }
 
-    // Determine status
+    // Determine status (configurable late time via env or default 06:30)
+    const [lateH, lateM] = (process.env.LATE_TIME || '06:30').split(':').map(Number);
     const [hours, minutes] = time.split(':').map(Number);
-    const status = (hours < 6 || (hours === 6 && minutes <= 30)) ? 'PRESENT' : 'LATE';
+    const status = (hours < lateH || (hours === lateH && minutes <= lateM)) ? 'PRESENT' : 'LATE';
 
     const result = await pool.query(
       'INSERT INTO teacher_attendance (teacher_id, teacher_name, class_name, date, time, status) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
@@ -244,24 +254,41 @@ app.get('/api/attendance/student', authMiddleware, async (req, res) => {
 
 app.post('/api/attendance/student', authMiddleware, async (req, res) => {
   try {
-    const { records } = req.body; // array of { studentId, studentName, class, status }
+    const { records, date: reqDate, time: reqTime } = req.body;
     const now = new Date();
-    const date = now.toISOString().split('T')[0];
-    const time = now.toTimeString().split(' ')[0].slice(0, 5);
+    const date = reqDate || now.toISOString().split('T')[0];
+    const time = reqTime || now.toTimeString().split(' ')[0].slice(0, 5);
 
-    // Delete existing records for this date and class
-    if (records.length > 0) {
+    // For sync (single record with exact date/time/status)
+    if (records && records.length === 1 && records[0].date) {
+      const r = records[0];
+      await pool.query(
+        'INSERT INTO student_attendance (student_id, student_name, class, date, time, status) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING',
+        [r.studentId, r.studentName, r.class, r.date, r.time || time, r.status]
+      );
+      return res.json({ synced: true, studentId: r.studentId, date: r.date });
+    }
+
+    // Bulk sync (multiple records with date override)
+    let useDate = date;
+    let useTime = time;
+    if (records && records.length > 0 && records[0]._syncDate) {
+      useDate = records[0]._syncDate;
+    }
+
+    // Delete existing records for this date and class (live marking)
+    if (records && records.length > 0 && !records[0]._syncDate) {
       await pool.query('DELETE FROM student_attendance WHERE date = $1 AND class = $2', [date, records[0].class]);
     }
 
-    // Insert new records
+    // Insert records
     const inserted = [];
     for (const r of records) {
       const result = await pool.query(
-        'INSERT INTO student_attendance (student_id, student_name, class, date, time, status) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
-        [r.studentId, r.studentName, r.class, date, time, r.status]
+        'INSERT INTO student_attendance (student_id, student_name, class, date, time, status) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING RETURNING *',
+        [r.studentId, r.studentName, r.class, r.date || useDate, r.time || useTime, r.status]
       );
-      inserted.push(result.rows[0]);
+      if (result.rows.length > 0) inserted.push(result.rows[0]);
     }
     res.json(inserted);
   } catch (err) {

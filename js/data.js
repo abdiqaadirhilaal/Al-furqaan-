@@ -187,9 +187,11 @@ const DB = {
     record.time = now.toTimeString().split(' ')[0].slice(0, 5);
     record.timestamp = now.toISOString();
 
-    // Determine status based on arrival time
+    // Determine status based on configurable late time
+    const lateTime = this.getLateTime();
+    const [lateH, lateM] = lateTime.split(':').map(Number);
     const [hours, minutes] = record.time.split(':').map(Number);
-    if (hours < 6 || (hours === 6 && minutes <= 30)) {
+    if (hours < lateH || (hours === lateH && minutes <= lateM)) {
       record.status = 'PRESENT';
     } else {
       record.status = 'LATE';
@@ -318,6 +320,14 @@ const DB = {
   // Manager
   getManager() {
     return JSON.parse(localStorage.getItem(this._prefix + 'manager'));
+  },
+
+  // Late time setting
+  getLateTime() {
+    return localStorage.getItem(this._prefix + 'late_time') || '06:30';
+  },
+  setLateTime(time) {
+    localStorage.setItem(this._prefix + 'late_time', time);
   }
 };
 

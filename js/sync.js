@@ -114,6 +114,35 @@ const Sync = {
       }
     }
 
+    // Sync teacher attendance
+    const tAtt = DB.getTeacherAttendance();
+    for (const a of tAtt) {
+      try {
+        await this.request('POST', '/api/attendance/teacher', {
+          teacherId: a.teacherId, teacherName: a.teacherName,
+          className: a.className, date: a.date, time: a.time, status: a.status
+        });
+        results.teacherAttendance++;
+      } catch (e) {
+        if (!e.message.includes('exists') && !e.message.includes('Duplicate')) console.error('T.Att sync:', e);
+        results.teacherAttendance++;
+      }
+    }
+
+    // Sync student attendance
+    const sAtt = DB.getStudentAttendance();
+    for (const a of sAtt) {
+      try {
+        await this.request('POST', '/api/attendance/student', {
+          records: [{ studentId: a.studentId, studentName: a.studentName, class: a.class, status: a.status, date: a.date, time: a.time }]
+        });
+        results.studentAttendance++;
+      } catch (e) {
+        if (!e.message.includes('exists') && !e.message.includes('Duplicate')) console.error('S.Att sync:', e);
+        results.studentAttendance++;
+      }
+    }
+
     return results;
   },
 
@@ -128,7 +157,36 @@ const Sync = {
       if (teachers && teachers.length > 0) {
         localStorage.setItem('furqaan_teachers', JSON.stringify(teachers));
       }
-      return { students: students?.length || 0, teachers: teachers?.length || 0 };
+      const payments = await this.request('GET', '/api/payments');
+      if (payments && payments.length > 0) {
+        // Convert backend column names to frontend format
+        const mapped = payments.map(p => ({
+          payId: p.id,
+          studentId: p.student_id,
+          studentName: p.student_name,
+          className: p.class_name,
+          amount: p.amount,
+          date: p.date,
+          recordedBy: p.recorded_by,
+          timestamp: p.timestamp
+        }));
+        localStorage.setItem('furqaan_payments', JSON.stringify(mapped));
+      }
+      const tAtt = await this.request('GET', '/api/attendance/teacher');
+      if (tAtt && tAtt.length > 0) {
+        localStorage.setItem('furqaan_teacher_attendance', JSON.stringify(tAtt));
+      }
+      const sAtt = await this.request('GET', '/api/attendance/student');
+      if (sAtt && sAtt.length > 0) {
+        localStorage.setItem('furqaan_student_attendance', JSON.stringify(sAtt));
+      }
+      return {
+        students: students?.length || 0,
+        teachers: teachers?.length || 0,
+        payments: payments?.length || 0,
+        teacherAttendance: tAtt?.length || 0,
+        studentAttendance: sAtt?.length || 0
+      };
     } catch (e) {
       console.error('Restore error:', e);
       throw e;
