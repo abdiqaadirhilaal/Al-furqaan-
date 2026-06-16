@@ -379,7 +379,19 @@ app.post('/api/init', async (req, res) => {
 });
 
 // ======================== START SERVER ========================
-app.listen(PORT, () => {
-  console.log(`🔷 Al-Furqaan API running on port ${PORT}`);
-  console.log(`🔷 Health check: http://localhost:${PORT}/api/health`);
+async function initDatabase() {
+  try {
+    const schema = require('fs').readFileSync('./db/schema.sql', 'utf8');
+    await pool.query(schema);
+    console.log('✅ Database tables and seed data ready');
+  } catch (err) {
+    console.error('⚠️ Database init skipped (may already exist):', err.message);
+  }
+}
+
+initDatabase().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🔷 Al-Furqaan API running on port ${PORT}`);
+    console.log(`🔷 Health check: http://localhost:${PORT}/api/health`);
+  });
 });

@@ -192,7 +192,7 @@
 
       // Try backend login first if configured
       if (Sync.isConfigured() && await Sync.isAvailable()) {
-        const resp = await fetch(Sync.getApiUrl() + '/auth/login', {
+        const resp = await fetch(Sync.getApiUrl() + '/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password, role: 'manager' })
@@ -232,7 +232,7 @@
 
       // Try backend login first if configured
       if (Sync.isConfigured() && await Sync.isAvailable()) {
-        const resp = await fetch(Sync.getApiUrl() + '/auth/login', {
+        const resp = await fetch(Sync.getApiUrl() + '/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: id, password, role: 'teacher' })
