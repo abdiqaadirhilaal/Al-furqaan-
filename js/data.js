@@ -18,7 +18,7 @@ const DB = {
 
   seed() {
     // Default Classes
-    const classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
+    const classes = ['1', '2', '3', '4'];
     localStorage.setItem(this._prefix + 'classes', JSON.stringify(classes));
 
     // Manager Account
@@ -33,10 +33,10 @@ const DB = {
 
     // Teacher Accounts
     const teachers = [
-      { id: 'T001', name: 'Teacher 1', password: 'furqaan1234', class: 'Class 1', phone: '0611111111', email: 'teacher1@furqaan.edu' },
-      { id: 'T002', name: 'Teacher 2', password: 'furqaan1234', class: 'Class 2', phone: '0612222222', email: 'teacher2@furqaan.edu' },
-      { id: 'T003', name: 'Teacher 3', password: 'furqaan1234', class: 'Class 3', phone: '0613333333', email: 'teacher3@furqaan.edu' },
-      { id: 'T004', name: 'Teacher 4', password: 'furqaan1234', class: 'Class 4', phone: '0614444444', email: 'teacher4@furqaan.edu' }
+      { id: 'T001', name: 'Teacher 1', password: 'furqaan1234', class: '1', phone: '0611111111', email: 'teacher1@furqaan.edu' },
+      { id: 'T002', name: 'Teacher 2', password: 'furqaan1234', class: '2', phone: '0612222222', email: 'teacher2@furqaan.edu' },
+      { id: 'T003', name: 'Teacher 3', password: 'furqaan1234', class: '3', phone: '0613333333', email: 'teacher3@furqaan.edu' },
+      { id: 'T004', name: 'Teacher 4', password: 'furqaan1234', class: '4', phone: '0614444444', email: 'teacher4@furqaan.edu' }
     ];
     localStorage.setItem(this._prefix + 'teachers', JSON.stringify(teachers));
 
@@ -76,7 +76,7 @@ const DB = {
       { name: 'Ibrahim Mohamed', parent: 'Mohamed Farah' }
     ];
 
-    const classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
+    const classes = ['1', '2', '3', '4'];
     const today = new Date();
 
     for (let i = 0; i < 20; i++) {

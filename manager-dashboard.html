@@ -275,7 +275,7 @@
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                   <div class="relative">
-                    <input type="password" id="tregPassword" value="furqaan1234" required class="form-input w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:outline-none" placeholder="Password">
+                    <input type="password" id="tregPassword" required class="form-input w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:outline-none" placeholder="Password">
                     <button type="button" onclick="toggleFieldPassword('tregPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"><i class="fas fa-eye"></i></button>
                   </div>
                 </div>
@@ -475,10 +475,10 @@
                   <p id="connStatus" class="text-xs mt-1 hidden"></p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                  <button onclick="syncToDatabase()" class="bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm hover:bg-emerald-700 transition-colors inline-flex items-center gap-1">
+                  <button onclick="handleSyncButton(this)" class="bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-sm hover:bg-emerald-700 transition-colors inline-flex items-center gap-1">
                     <i class="fas fa-upload"></i> Sync → PostgreSQL
                   </button>
-                  <button onclick="restoreFromDb()" class="bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors inline-flex items-center gap-1">
+                  <button onclick="handleRestoreButton(this)" class="bg-blue-600 text-white px-4 py-2.5 rounded-xl text-sm hover:bg-blue-700 transition-colors inline-flex items-center gap-1">
                     <i class="fas fa-download"></i> Restore ← PostgreSQL
                   </button>
                 </div>
@@ -1225,19 +1225,18 @@
       }
     }
 
-    async function syncToDatabase() {
+    async function handleSyncButton(btn) {
       if (!Sync.isConfigured()) {
         Utils.showToast('Please configure and test the backend URL first', 'error');
         return;
       }
 
-      const btn = event.target;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
       btn.disabled = true;
 
       try {
         const result = await Sync.syncAll();
-        Utils.showToast(`✅ Synced: ${result.students} students, ${result.teachers} teachers, ${result.payments} payments`, 'success');
+        Utils.showToast(`✅ Synced: ${result.students} students, ${result.teachers} teachers, ${result.payments} payments, ${result.teacherAttendance} teacher att., ${result.studentAttendance} student att.`, 'success');
       } catch (e) {
         Utils.showToast('Sync failed: ' + e.message, 'error');
       }
@@ -1246,20 +1245,19 @@
       btn.disabled = false;
     }
 
-    async function restoreFromDb() {
+    async function handleRestoreButton(btn) {
       if (!Sync.isConfigured()) {
         Utils.showToast('Please configure and test the backend URL first', 'error');
         return;
       }
       if (!confirm('Restore will OVERWRITE current localStorage data with database data. Continue?')) return;
 
-      const btn = event.target;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Restoring...';
       btn.disabled = true;
 
       try {
         const result = await Sync.restoreFromBackend();
-        Utils.showToast(`✅ Restored: ${result.students} students, ${result.teachers} teachers. Reloading...`, 'success');
+        Utils.showToast(`✅ Restored: ${result.students} students, ${result.teachers} teachers, ${result.payments} payments, ${result.teacherAttendance} teacher att., ${result.studentAttendance} student att. Reloading...`, 'success');
         setTimeout(() => window.location.reload(), 1500);
       } catch (e) {
         Utils.showToast('Restore failed: ' + e.message, 'error');

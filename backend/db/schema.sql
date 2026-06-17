@@ -80,12 +80,12 @@ CREATE INDEX IF NOT EXISTS idx_payments_student ON payments(student_id);
 INSERT INTO manager (id, username, password, name) VALUES ('M001', 'manager', 'admin123', 'School Manager')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO classes (name) VALUES ('Class 1'), ('Class 2'), ('Class 3'), ('Class 4')
+INSERT INTO classes (name) VALUES ('1'), ('2'), ('3'), ('4')
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO teachers (id, name, password, class, phone, email) VALUES
-  ('T001', 'Teacher 1', 'furqaan1234', 'Class 1', '0611111111', 'teacher1@furqaan.edu'),
-  ('T002', 'Teacher 2', 'furqaan1234', 'Class 2', '0612222222', 'teacher2@furqaan.edu'),
-  ('T003', 'Teacher 3', 'furqaan1234', 'Class 3', '0613333333', 'teacher3@furqaan.edu'),
-  ('T004', 'Teacher 4', 'furqaan1234', 'Class 4', '0614444444', 'teacher4@furqaan.edu')
+  ('T001', 'Teacher 1', 'furqaan1234', '1', '0611111111', 'teacher1@furqaan.edu'),
+  ('T002', 'Teacher 2', 'furqaan1234', '2', '0612222222', 'teacher2@furqaan.edu'),
+  ('T003', 'Teacher 3', 'furqaan1234', '3', '0613333333', 'teacher3@furqaan.edu'),
+  ('T004', 'Teacher 4', 'furqaan1234', '4', '0614444444', 'teacher4@furqaan.edu')
 ON CONFLICT (id) DO NOTHING;
