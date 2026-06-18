@@ -182,22 +182,25 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
       btn.disabled = true;
 
-      // Try backend login first if configured
-      if (Sync.isConfigured() && await Sync.isAvailable()) {
-        const resp = await fetch(Sync.getApiUrl() + '/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, role: 'manager' })
-        });
-        if (resp.ok) {
-          const data = await resp.json();
-          localStorage.setItem('furqaan_backend_token', data.token);
-          Auth.login(username, password, 'manager');
-          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
-          window.location.href = 'manager-dashboard.html';
-          return;
-        }
-        // fall through to localStorage login on failure
+      // Try backend login first (Render may be waking up - short timeout)
+      const backendUrl = Sync.getApiUrl();
+      if (backendUrl) {
+        try {
+          const resp = await fetch(backendUrl + '/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, role: 'manager' }),
+            signal: AbortSignal.timeout(4000)
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            localStorage.setItem('furqaan_backend_token', data.token);
+            Auth.login(username, password, 'manager');
+            btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
+            window.location.href = 'manager-dashboard.html';
+            return;
+          }
+        } catch {} // fall through to localStorage
       }
 
       setTimeout(() => {
@@ -222,22 +225,25 @@
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
       btn.disabled = true;
 
-      // Try backend login first if configured
-      if (Sync.isConfigured() && await Sync.isAvailable()) {
-        const resp = await fetch(Sync.getApiUrl() + '/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: id, password, role: 'teacher' })
-        });
-        if (resp.ok) {
-          const data = await resp.json();
-          localStorage.setItem('furqaan_backend_token', data.token);
-          Auth.login(id, password, 'teacher');
-          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
-          window.location.href = 'teacher-dashboard.html';
-          return;
-        }
-        // fall through to localStorage login on failure
+      // Try backend login first (Render may be waking up - short timeout)
+      const backendUrl = Sync.getApiUrl();
+      if (backendUrl) {
+        try {
+          const resp = await fetch(backendUrl + '/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: id, password, role: 'teacher' }),
+            signal: AbortSignal.timeout(4000)
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            localStorage.setItem('furqaan_backend_token', data.token);
+            Auth.login(id, password, 'teacher');
+            btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
+            window.location.href = 'teacher-dashboard.html';
+            return;
+          }
+        } catch {} // fall through to localStorage
       }
 
       setTimeout(() => {

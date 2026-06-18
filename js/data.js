@@ -17,6 +17,11 @@ const DB = {
   },
 
   seed() {
+    // Backend API URL (Render)
+    if (!localStorage.getItem('furqaan_api_url')) {
+      localStorage.setItem('furqaan_api_url', 'https://al-furqaan.onrender.com');
+    }
+
     // Default Classes
     const classes = ['1', '2', '3', '4'];
     localStorage.setItem(this._prefix + 'classes', JSON.stringify(classes));
