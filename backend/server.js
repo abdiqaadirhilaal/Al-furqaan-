@@ -393,6 +393,16 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// ======================== ROOT ROUTE ========================
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Al-Furqaan Quran School API',
+    version: '1.0.0',
+    status: 'running',
+    docs: '/api/health'
+  });
+});
+
 // ======================== INIT DB ENDPOINT ========================
 app.post('/api/init', async (req, res) => {
   try {
