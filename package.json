@@ -2,6 +2,9 @@
   "name": "alfurqaan-api",
   "version": "1.0.0",
   "description": "Al-Furqaan Quran School - Backend API",
+  "scripts": {
+    "vercel-build": "echo done"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
