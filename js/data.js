@@ -17,9 +17,9 @@ const DB = {
   },
 
   seed() {
-    // Backend API URL (set after Vercel deployment)
+    // Backend API URL (same domain as frontend on Vercel)
     if (!localStorage.getItem('furqaan_api_url')) {
-      localStorage.setItem('furqaan_api_url', 'https://al-furqaan.vercel.app');
+      localStorage.setItem('furqaan_api_url', '');
     }
 
     // Default Classes
