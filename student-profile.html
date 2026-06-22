@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taariikhda Ardayga - Al-Furqaan Quran School</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
+            gold: { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207', 800: '#854d0e', 900: '#713f12' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    * { font-family: 'Inter', sans-serif; }
+    .page { display: none; animation: fadeIn 0.4s ease; }
+    .page.active { display: block; }
+    .sidebar-item { transition: all 0.3s ease; cursor: pointer; border-radius: 12px; }
+    .sidebar-item:hover { background: rgba(255,255,255,0.1); }
+    .sidebar-item.active { background: rgba(255,255,255,0.15); border-left: 4px solid #eab308; }
+    .stat-card { transition: all 0.3s ease; }
+    .stat-card:hover { transform: translateY(-3px); }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { background: #f8fafc; padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+    .data-table tr:hover td { background: #f1f5f9; }
+    .form-input { transition: all 0.3s ease; }
+    .form-input:focus { border-color: #059669; box-shadow: 0 0 0 3px rgba(5,150,105,0.15); }
+    .badge { padding: 4px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .student-result { transition: all 0.2s ease; cursor: pointer; }
+    .student-result:hover { background: #f0fdf4; transform: translateX(4px); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #059669; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- TOP NAVBAR -->
+  <header class="bg-gradient-to-r from-emerald-800 to-emerald-900 text-white shadow-lg sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 lg:px-6">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-gold-500 rounded-full flex items-center justify-center"><i class="fas fa-quran text-emerald-900"></i></div>
+            <h2 class="font-bold text-lg">Al-Furqaan</h2>
+          </a>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="manager-dashboard.html" class="text-emerald-200 hover:text-white transition-colors text-sm flex items-center gap-2">
+            <i class="fas fa-tachometer-alt"></i><span class="hidden sm:inline">Guddiga Maamulka</span>
+          </a>
+          <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+            <i class="fas fa-sign-out-alt"></i>Ka Bax
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-5xl mx-auto px-4 lg:px-6 py-6 space-y-6">
+    <!-- SEARCH SECTION -->
+    <div class="bg-white rounded-2xl shadow-sm p-4 lg:p-6">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex-1 relative">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" id="searchInput" placeholder="Raadi arday..." class="form-input w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none text-sm" onkeyup="searchStudents()">
+        </div>
+        <div class="sm:w-48">
+          <select id="classFilter" class="form-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none text-sm" onchange="searchStudents()">
+            <option value="">Fasalka oo dhan</option>
+          </select>
+        </div>
+      </div>
+      <div id="searchResults" class="mt-4 space-y-1 max-h-64 overflow-y-auto"></div>
+    </div>
+
+    <!-- STUDENT PROFILE (hidden until selected) -->
+    <div id="studentProfile" class="space-y-6">
+      <!-- Profile Card -->
+      <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row items-center gap-6">
+          <div class="w-24 h-24 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-full flex items-center justify-center shadow-lg ring-4 ring-emerald-100 shrink-0">
+            <i class="fas fa-user-graduate text-white text-4xl"></i>
+          </div>
+          <div class="flex-1 text-center sm:text-left space-y-2">
+            <h3 class="text-2xl font-bold text-emerald-800" id="profileName">-</h3>
+            <div class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+              <p><span class="text-gray-500 font-medium">ID-ga Ardayga:</span> <span class="font-semibold text-gray-800" id="profileId">-</span></p>
+              <p><span class="text-gray-500 font-medium">Fasalka:</span> <span class="font-semibold text-gray-800" id="profileClass">-</span></p>
+              <p><span class="text-gray-500 font-medium">Waalidka:</span> <span class="font-semibold text-gray-800" id="profileParent">-</span></p>
+              <p><span class="text-gray-500 font-medium">Lambarka Waalidka:</span> <span class="font-semibold text-gray-800" id="profilePhone">-</span></p>
+              <p><span class="text-gray-500 font-medium sm:col-span-2">Taariikhda Diiwaangelinta:</span> <span class="font-semibold text-gray-800" id="profileDate">-</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE SECTION -->
+      <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+        <h3 class="text-xl font-bold text-emerald-800 mb-5"><i class="fas fa-calendar-check text-emerald-500 mr-2"></i>Xaadirinta Ardayga</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="stat-card bg-blue-50 rounded-xl p-4 text-center border-l-4 border-blue-500">
+            <p class="text-3xl font-bold text-blue-600" id="attPresent">0</p>
+            <p class="text-xs text-gray-500 font-medium">Maalmihii Joogay</p>
+          </div>
+          <div class="stat-card bg-red-50 rounded-xl p-4 text-center border-l-4 border-red-500">
+            <p class="text-3xl font-bold text-red-600" id="attAbsent">0</p>
+            <p class="text-xs text-gray-500 font-medium">Maalmihii Maqnaa</p>
+          </div>
+          <div class="stat-card bg-yellow-50 rounded-xl p-4 text-center border-l-4 border-yellow-500">
+            <p class="text-3xl font-bold text-yellow-600" id="attLeave">0</p>
+            <p class="text-xs text-gray-500 font-medium">Maalmihii Fasaxa</p>
+          </div>
+          <div class="stat-card bg-purple-50 rounded-xl p-4 text-center border-l-4 border-purple-500">
+            <p class="text-3xl font-bold text-purple-600" id="attPct">0%</p>
+            <p class="text-xs text-gray-500 font-medium">Boqolleyda</p>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-2">
+            <span class="font-medium text-gray-600">Boqolleyda Xaadirinta</span>
+            <span class="font-bold text-emerald-600" id="attPctLabel">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+            <div id="attBar" class="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full h-4 transition-all duration-500" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINANCE SECTION -->
+      <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+        <h3 class="text-xl font-bold text-emerald-800 mb-5"><i class="fas fa-money-bill-wave text-emerald-500 mr-2"></i>Taariikhda Lacagta</h3>
+        <div class="overflow-x-auto">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Bil</th>
+                <th>Bixiyay</th>
+                <th>Lacagta</th>
+              </tr>
+            </thead>
+            <tbody id="financeBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PERFORMANCE SECTION -->
+      <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+        <h3 class="text-xl font-bold text-emerald-800 mb-5"><i class="fas fa-chart-line text-emerald-500 mr-2"></i>Waxqabadka</h3>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-gray-50 rounded-xl p-5 text-center">
+            <i class="fas fa-file-alt text-gray-400 text-3xl mb-3 block"></i>
+            <h4 class="font-bold text-gray-600 mb-2">Imtixaanada</h4>
+            <p class="text-sm text-gray-400">Imtixaan lama kaydin</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-5 text-center">
+            <i class="fas fa-star text-gray-400 text-3xl mb-3 block"></i>
+            <h4 class="font-bold text-gray-600 mb-2">Celceliska Dhibcaha</h4>
+            <p class="text-3xl font-bold text-gray-400">-</p>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-5">
+            <h4 class="font-bold text-gray-600 mb-4 text-center">Horumarka Ardayga</h4>
+            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+              <div class="bg-gradient-to-r from-gold-400 to-gold-500 rounded-full h-4" style="width:0%"></div>
+            </div>
+            <p class="text-center text-sm text-gray-400 mt-3">Xog ma jirto</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/sync.js"></script>
+  <script>
+    const currentUser = Auth.requireAuth('manager');
+
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const monthNamesSo = [
+      'Janaayo', 'Febraayo', 'Maarso', 'Abriil', 'May', 'Juun',
+      'Luuliyo', 'Agoosto', 'Sebtembar', 'Oktoobar', 'Nofeembar', 'Diseembar'
+    ];
+
+    let selectedStudentId = null;
+
+    function handleLogout() {
+      Auth.logout();
+      window.location.href = 'login.html';
+    }
+
+    function searchStudents() {
+      let students = DB.getStudents();
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const classFilter = document.getElementById('classFilter').value;
+
+      if (query) {
+        students = students.filter(s =>
+          s.name.toLowerCase().includes(query) ||
+          s.id.toLowerCase().includes(query)
+        );
+      }
+      if (classFilter) {
+        students = students.filter(s => s.class === classFilter);
+      }
+
+      const container = document.getElementById('searchResults');
+      if (students.length === 0) {
+        container.innerHTML = '<div class="text-center text-gray-400 py-8 text-sm"><i class="fas fa-search mr-2"></i>Arday lama helin</div>';
+        return;
+      }
+      container.innerHTML = students.map(s => `
+        <div class="student-result flex items-center justify-between p-3 rounded-xl" onclick="selectStudent('${s.id}')">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-user text-emerald-600 text-sm"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-emerald-800">${s.name}</p>
+              <p class="text-xs text-gray-400">${s.id} - Fasalka ${s.class}</p>
+            </div>
+          </div>
+          <i class="fas fa-chevron-right text-gray-300 text-sm"></i>
+        </div>
+      `).join('');
+    }
+
+    function selectStudent(id) {
+      selectedStudentId = id;
+      const student = DB.getStudentById(id);
+      if (!student) return;
+      document.getElementById('studentProfile').style.display = 'block';
+      document.getElementById('studentProfile').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      loadStudentProfile(student);
+    }
+
+    function loadStudentProfile(student) {
+      document.getElementById('profileName').textContent = student.name;
+      document.getElementById('profileId').textContent = student.id;
+      document.getElementById('profileClass').textContent = 'Fasalka ' + student.class;
+      document.getElementById('profileParent').textContent = student.parent || '-';
+      document.getElementById('profilePhone').textContent = student.phone || '-';
+      document.getElementById('profileDate').textContent = Utils.formatDate(student.registrationDate);
+
+      renderStudentAttendance(student.id);
+      renderStudentFinance(student.id);
+      renderStudentPerformance(student.id);
+    }
+
+    function renderStudentAttendance(studentId) {
+      const stats = DB.getStudentAttendancePercentage(studentId);
+      const records = DB.getStudentAttendanceByStudent(studentId);
+
+      document.getElementById('attPresent').textContent = stats.present;
+      document.getElementById('attAbsent').textContent = stats.absent;
+      document.getElementById('attLeave').textContent = stats.leave;
+      document.getElementById('attPct').textContent = stats.percentage + '%';
+      document.getElementById('attPctLabel').textContent = stats.percentage + '%';
+      document.getElementById('attBar').style.width = stats.percentage + '%';
+    }
+
+    function renderStudentFinance(studentId) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const tbody = document.getElementById('financeBody');
+      let rows = '';
+      let totalPaid = 0;
+
+      for (let m = 0; m < 12; m++) {
+        const payments = DB.getPaymentsByStudentAndMonth(studentId, m, year);
+        const paid = payments.length > 0;
+        const amount = payments.reduce((sum, p) => sum + Number(p.amount), 0);
+        totalPaid += amount;
+
+        rows += `
+          <tr>
+            <td class="font-medium text-gray-800">${monthNamesSo[m]}</td>
+            <td>
+              <span class="badge ${paid ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                ${paid ? 'Haa' : 'Maya'}
+              </span>
+            </td>
+            <td class="${paid ? 'font-bold text-emerald-600' : 'text-gray-400'}">${paid ? Utils.formatCurrency(amount) : '-'}</td>
+          </tr>
+        `;
+      }
+
+      rows += `
+        <tr class="bg-emerald-50 font-bold">
+          <td class="text-emerald-800">Wadarta Guud</td>
+          <td></td>
+          <td class="text-emerald-700">${Utils.formatCurrency(totalPaid)}</td>
+        </tr>
+      `;
+
+      tbody.innerHTML = rows;
+    }
+
+    function renderStudentPerformance(studentId) {
+      // Placeholder - no exam data in current DB schema
+    }
+
+    function loadClassFilter() {
+      const classes = DB.getClasses();
+      const sel = document.getElementById('classFilter');
+      sel.innerHTML = '<option value="">Fasalka oo dhan</option>' +
+        classes.map(c => `<option value="${c}">Fasalka ${c}</option>`).join('');
+    }
+
+    searchStudents();
+    loadClassFilter();
+  </script>
+</body>
+</html>

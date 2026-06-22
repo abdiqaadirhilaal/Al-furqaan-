@@ -114,13 +114,14 @@ const Sync = {
       }
     }
 
-    // Sync teacher attendance
+      // Sync teacher attendance
     const tAtt = DB.getTeacherAttendance();
     for (const a of tAtt) {
       try {
         await this.request('POST', '/api/attendance/teacher', {
           teacherId: a.teacherId, teacherName: a.teacherName,
-          className: a.className, date: a.date, time: a.time, status: a.status
+          className: a.className, date: a.date, time: a.time,
+          session: a.session || 'subax', status: a.status
         });
         results.teacherAttendance++;
       } catch (e) {

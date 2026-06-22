@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="so">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +51,7 @@
         <i class="fas fa-quran text-gold-400 text-3xl"></i>
       </div>
       <h1 class="text-2xl font-bold text-white">Al-Furqaan Quran School</h1>
-      <p class="text-emerald-200 text-sm">School Management Portal</p>
+      <p class="text-emerald-200 text-sm">Portal-ka Maamulka Dugsiga</p>
     </div>
 
     <!-- Login Card -->
@@ -59,10 +59,10 @@
       <!-- Tabs -->
       <div class="flex mb-8 bg-gray-100 rounded-xl p-1">
         <button class="tab-btn active flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all" data-tab="manager">
-          <i class="fas fa-user-tie mr-2"></i>Manager
+          <i class="fas fa-user-tie mr-2"></i>Maareeyaha
         </button>
         <button class="tab-btn flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all text-gray-500 hover:text-gray-700" data-tab="teacher">
-          <i class="fas fa-chalkboard-teacher mr-2"></i>Teacher
+          <i class="fas fa-chalkboard-teacher mr-2"></i>Macallinka
         </button>
       </div>
 
@@ -71,20 +71,20 @@
         <form id="managerLoginForm" class="space-y-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="fas fa-user text-emerald-600 mr-1"></i> Username
+              <i class="fas fa-user text-emerald-600 mr-1"></i> Magaca Gelista
             </label>
             <input type="text" id="mgrUsername" required
               class="form-input w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none"
-              placeholder="Enter username">
+              placeholder="Geli magaca gelista">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="fas fa-lock text-emerald-600 mr-1"></i> Password
+              <i class="fas fa-lock text-emerald-600 mr-1"></i> Furaha
             </label>
             <div class="relative">
               <input type="password" id="mgrPassword" required
                 class="form-input w-full px-4 py-3.5 pr-12 rounded-xl border border-gray-200 focus:outline-none"
-                placeholder="Enter password">
+                placeholder="Geli furaha">
               <button type="button" onclick="togglePassword('mgrPassword', this)"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                 <i class="fas fa-eye"></i>
@@ -93,7 +93,7 @@
           </div>
           <button type="submit"
             class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl text-base">
-            <i class="fas fa-sign-in-alt mr-2"></i>Login as Manager
+            <i class="fas fa-sign-in-alt mr-2"></i>Soo Gal Maareeyaha
           </button>
         </form>
       </div>
@@ -103,20 +103,20 @@
         <form id="teacherLoginForm" class="space-y-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="fas fa-id-card text-emerald-600 mr-1"></i> Teacher ID
+              <i class="fas fa-id-card text-emerald-600 mr-1"></i> ID-ga Macallinka
             </label>
             <input type="text" id="tchrId" required
               class="form-input w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:outline-none"
-              placeholder="e.g. T001">
+              placeholder="Tusaale T001">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="fas fa-lock text-emerald-600 mr-1"></i> Password
+              <i class="fas fa-lock text-emerald-600 mr-1"></i> Furaha
             </label>
             <div class="relative">
               <input type="password" id="tchrPassword" required
                 class="form-input w-full px-4 py-3.5 pr-12 rounded-xl border border-gray-200 focus:outline-none"
-                placeholder="Enter password">
+                placeholder="Geli furaha">
               <button type="button" onclick="togglePassword('tchrPassword', this)"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                 <i class="fas fa-eye"></i>
@@ -125,7 +125,7 @@
           </div>
           <button type="submit"
             class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-3.5 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl text-base">
-            <i class="fas fa-sign-in-alt mr-2"></i>Login as Teacher
+            <i class="fas fa-sign-in-alt mr-2"></i>Soo Gal Macallinka
           </button>
         </form>
       </div>
@@ -134,7 +134,7 @@
     <!-- Back to home -->
     <div class="text-center mt-6">
       <a href="index.html" class="text-emerald-200 hover:text-white transition-colors text-sm">
-        <i class="fas fa-arrow-left mr-2"></i>Back to Home
+        <i class="fas fa-arrow-left mr-2"></i>Ku Noqo Guriga
       </a>
     </div>
   </div>
@@ -179,10 +179,10 @@
       const username = document.getElementById('mgrUsername').value.trim();
       const password = document.getElementById('mgrPassword').value;
       const btn = this.querySelector('button');
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Soo galayaa...';
       btn.disabled = true;
 
-      // Try backend login first (Render may be waking up - short timeout)
+      // Try backend login first
       const backendUrl = Sync.getApiUrl();
       if (backendUrl) {
         try {
@@ -209,7 +209,7 @@
           btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
           window.location.href = 'manager-dashboard.html';
         } else {
-          btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Login as Manager';
+          btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Soo Gal Maareeyaha';
           btn.disabled = false;
           Utils.showToast(result.message, 'error');
         }
@@ -222,10 +222,10 @@
       const id = document.getElementById('tchrId').value.trim();
       const password = document.getElementById('tchrPassword').value;
       const btn = this.querySelector('button');
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Soo galayaa...';
       btn.disabled = true;
 
-      // Try backend login first (Render may be waking up - short timeout)
+      // Try backend login first
       const backendUrl = Sync.getApiUrl();
       if (backendUrl) {
         try {
@@ -252,7 +252,7 @@
           btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
           window.location.href = 'teacher-dashboard.html';
         } else {
-          btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Login as Teacher';
+          btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Soo Gal Macallinka';
           btn.disabled = false;
           Utils.showToast(result.message, 'error');
         }

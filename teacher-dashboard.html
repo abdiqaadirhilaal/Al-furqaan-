@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="so">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher Dashboard - Al-Furqaan Quran School</title>
+  <title>Dashboard-ka Macallinka - Al-Furqaan Quran School</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -42,6 +42,8 @@
     @media (max-width: 767px) { .sidebar-desktop { display: none; } }
     @media (min-width: 768px) { .sidebar-mobile-overlay { display: none !important; } }
     .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
+    .session-btn { transition: all 0.3s ease; }
+    .session-btn:hover:not(:disabled) { transform: translateY(-2px); }
   </style>
 </head>
 <body class="bg-gray-50">
@@ -52,20 +54,20 @@
         <div class="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center"><i class="fas fa-quran text-emerald-900"></i></div>
         <div>
           <h2 class="font-bold text-sm">Al-Furqaan</h2>
-          <p class="text-emerald-300 text-[10px]">Teacher Panel</p>
+          <p class="text-emerald-300 text-[10px]">Macalink ahaan</p>
         </div>
       </a>
     </div>
     <nav class="p-3 space-y-1" id="sidebarNav">
-      <div class="sidebar-item active px-4 py-3 flex items-center gap-3 text-sm" data-page="dashboard"><i class="fas fa-chart-pie w-5 text-gold-400"></i>Dashboard</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="students"><i class="fas fa-users w-5 text-gold-400"></i>My Students</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="studentAttendance"><i class="fas fa-user-check w-5 text-gold-400"></i>Student Attendance</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="myAttendance"><i class="fas fa-clipboard-check w-5 text-gold-400"></i>My Attendance</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="profile"><i class="fas fa-user-cog w-5 text-gold-400"></i>Profile</div>
+      <div class="sidebar-item active px-4 py-3 flex items-center gap-3 text-sm" data-page="dashboard"><i class="fas fa-chart-pie w-5 text-gold-400"></i>Dashboard-ka</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="students"><i class="fas fa-users w-5 text-gold-400"></i>Ardaydayda</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="studentAttendance"><i class="fas fa-user-check w-5 text-gold-400"></i>Xaadirinta Ardayda</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="myAttendance"><i class="fas fa-clipboard-check w-5 text-gold-400"></i>Xaadirintayda</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="profile"><i class="fas fa-user-cog w-5 text-gold-400"></i>Qiyaasta</div>
     </nav>
     <div class="p-4 border-t border-white/10 mt-4">
       <button onclick="handleLogout()" class="flex items-center gap-3 text-sm text-emerald-300 hover:text-white transition-colors w-full">
-        <i class="fas fa-sign-out-alt w-5"></i>Logout
+        <i class="fas fa-sign-out-alt w-5"></i>Ka Bax
       </button>
     </div>
   </aside>
@@ -76,20 +78,20 @@
     <div class="p-4 border-b border-white/10 flex justify-between items-center">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center"><i class="fas fa-quran text-emerald-900"></i></div>
-        <div><h2 class="font-bold text-sm">Al-Furqaan</h2><p class="text-emerald-300 text-[10px]">Teacher Panel</p></div>
+        <div><h2 class="font-bold text-sm">Al-Furqaan</h2><p class="text-emerald-300 text-[10px]">Macalink ahaan</p></div>
       </div>
       <button onclick="toggleMobileSidebar()" class="text-white text-xl"><i class="fas fa-times"></i></button>
     </div>
     <nav class="p-3 space-y-1" id="mobileSidebarNav">
-      <div class="sidebar-item active px-4 py-3 flex items-center gap-3 text-sm" data-page="dashboard" onclick="navigateTo('dashboard');toggleMobileSidebar()"><i class="fas fa-chart-pie w-5 text-gold-400"></i>Dashboard</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="students" onclick="navigateTo('students');toggleMobileSidebar()"><i class="fas fa-users w-5 text-gold-400"></i>My Students</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="studentAttendance" onclick="navigateTo('studentAttendance');toggleMobileSidebar()"><i class="fas fa-user-check w-5 text-gold-400"></i>Student Attendance</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="myAttendance" onclick="navigateTo('myAttendance');toggleMobileSidebar()"><i class="fas fa-clipboard-check w-5 text-gold-400"></i>My Attendance</div>
-      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="profile" onclick="navigateTo('profile');toggleMobileSidebar()"><i class="fas fa-user-cog w-5 text-gold-400"></i>Profile</div>
+      <div class="sidebar-item active px-4 py-3 flex items-center gap-3 text-sm" data-page="dashboard" onclick="navigateTo('dashboard');toggleMobileSidebar()"><i class="fas fa-chart-pie w-5 text-gold-400"></i>Dashboard-ka</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="students" onclick="navigateTo('students');toggleMobileSidebar()"><i class="fas fa-users w-5 text-gold-400"></i>Ardaydayda</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="studentAttendance" onclick="navigateTo('studentAttendance');toggleMobileSidebar()"><i class="fas fa-user-check w-5 text-gold-400"></i>Xaadirinta Ardayda</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="myAttendance" onclick="navigateTo('myAttendance');toggleMobileSidebar()"><i class="fas fa-clipboard-check w-5 text-gold-400"></i>Xaadirintayda</div>
+      <div class="sidebar-item px-4 py-3 flex items-center gap-3 text-sm" data-page="profile" onclick="navigateTo('profile');toggleMobileSidebar()"><i class="fas fa-user-cog w-5 text-gold-400"></i>Qiyaasta</div>
     </nav>
     <div class="p-4 border-t border-white/10 mt-4">
       <button onclick="handleLogout()" class="flex items-center gap-3 text-sm text-emerald-300 hover:text-white transition-colors w-full">
-        <i class="fas fa-sign-out-alt w-5"></i>Logout
+        <i class="fas fa-sign-out-alt w-5"></i>Ka Bax
       </button>
     </div>
   </aside>
@@ -101,8 +103,8 @@
         <div class="flex items-center gap-3">
           <button onclick="toggleMobileSidebar()" class="md:hidden text-gray-600 text-xl"><i class="fas fa-bars"></i></button>
           <div>
-            <h3 class="font-bold text-emerald-800 text-lg" id="pageTitle">Dashboard</h3>
-            <p class="text-xs text-gray-400" id="pageSubtitle">Teacher overview</p>
+            <h3 class="font-bold text-emerald-800 text-lg" id="pageTitle">Dashboard-ka</h3>
+            <p class="text-xs text-gray-400" id="pageSubtitle">Macalink ahaan</p>
           </div>
         </div>
         <div class="flex items-center gap-4">
@@ -117,125 +119,129 @@
 
     <div class="p-4 lg:p-6 space-y-6" id="pageContent">
 
-      <!-- ===== DASHBOARD ===== -->
+      <!-- ===== DASHBOARD-KA ===== -->
       <div class="page active" id="page-dashboard">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-6">
           <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-emerald-500">
-            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">My Students</p>
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Ardaydayda</p>
             <p class="text-3xl font-bold text-emerald-700 mt-1" id="tdashStudents">0</p>
           </div>
           <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-gold-500">
-            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">My Class</p>
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Fasalkayga</p>
             <p class="text-xl font-bold text-gold-600 mt-1" id="tdashClass">-</p>
           </div>
           <div class="bg-white rounded-2xl p-5 shadow-sm stat-card border-l-4 border-blue-500">
-            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Attendance Today</p>
+            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Xaadirinta Maanta</p>
             <p class="text-3xl font-bold text-blue-600 mt-1" id="tdashAttendance">0</p>
           </div>
         </div>
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-          <h4 class="font-bold text-emerald-800 mb-4">Welcome!</h4>
-          <p class="text-gray-500">Welcome to your teacher dashboard, <strong id="tdashTeacherName">Teacher</strong>. You are assigned to <strong id="tdashTeacherClass">Class</strong>. You can manage your students, mark attendance, and view your profile from the sidebar.</p>
+          <h4 class="font-bold text-emerald-800 mb-4">Soo Dhawoow!</h4>
+          <p class="text-gray-500">Soo dhawoow dashboard-kaaga macallinka, <strong id="tdashTeacherName">Macallin</strong>. Waxaad u xilsaaran tahay <strong id="tdashTeacherClass">Fasal</strong>. Waxaad maamuli kartaa ardaydaada, calaamadeyn kartaa xaadirinta, oo daawasho kartaa qiyaastaada liiska dhinaca.</p>
           <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
             <button onclick="navigateTo('students')" class="p-4 bg-emerald-50 rounded-xl text-center hover:bg-emerald-100 transition-colors">
               <i class="fas fa-users text-emerald-600 text-xl mb-2 block"></i>
-              <span class="text-sm font-medium text-emerald-700">My Students</span>
+              <span class="text-sm font-medium text-emerald-700">Ardaydayda</span>
             </button>
             <button onclick="navigateTo('studentAttendance')" class="p-4 bg-gold-50 rounded-xl text-center hover:bg-gold-100 transition-colors">
               <i class="fas fa-user-check text-gold-600 text-xl mb-2 block"></i>
-              <span class="text-sm font-medium text-gold-700">Mark Attendance</span>
+              <span class="text-sm font-medium text-gold-700">Calaamadee Xaadirinta</span>
             </button>
             <button onclick="navigateTo('myAttendance')" class="p-4 bg-blue-50 rounded-xl text-center hover:bg-blue-100 transition-colors">
               <i class="fas fa-clipboard-list text-blue-600 text-xl mb-2 block"></i>
-              <span class="text-sm font-medium text-blue-700">My Attendance</span>
+              <span class="text-sm font-medium text-blue-700">Xaadirintayda</span>
             </button>
             <button onclick="navigateTo('profile')" class="p-4 bg-purple-50 rounded-xl text-center hover:bg-purple-100 transition-colors">
               <i class="fas fa-user text-purple-600 text-xl mb-2 block"></i>
-              <span class="text-sm font-medium text-purple-700">Profile</span>
+              <span class="text-sm font-medium text-purple-700">Qiyaasta</span>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- ===== MY STUDENTS ===== -->
+      <!-- ===== ARDAYDAYDA ===== -->
       <div class="page" id="page-students">
         <div class="bg-white rounded-2xl shadow-sm">
           <div class="p-4 lg:p-6 border-b border-gray-100">
-            <h3 class="text-xl font-bold text-emerald-800">My Students - <span id="tstudentsClass" class="text-gold-600"></span></h3>
-            <p class="text-sm text-gray-400 mt-1">Showing students assigned to your class only.</p>
+            <h3 class="text-xl font-bold text-emerald-800">Ardaydayda - <span id="tstudentsClass" class="text-gold-600"></span></h3>
+            <p class="text-sm text-gray-400 mt-1">Waxaa soo bandhigayaa ardayda ku jirta fasalkaaga.</p>
           </div>
           <div class="overflow-x-auto">
             <table class="data-table">
               <thead>
-                <tr><th>ID</th><th>Name</th><th>Phone</th><th>Parent</th><th>Registered</th></tr>
+                <tr><th>ID</th><th>Magaca</th><th>Lambarka</th><th>Waalidka</th><th>Diwaan-gelinta</th></tr>
               </thead>
               <tbody id="teacherStudentsBody"></tbody>
             </table>
           </div>
-          <div class="p-4 text-center text-gray-400 text-sm" id="tstudentsEmpty">No students in your class</div>
+          <div class="p-4 text-center text-gray-400 text-sm" id="tstudentsEmpty">Arday kuma jiraan fasalkaaga</div>
         </div>
       </div>
 
-      <!-- ===== STUDENT ATTENDANCE ===== -->
+      <!-- ===== XAADIRINTA ARDAYDA ===== -->
       <div class="page" id="page-studentAttendance">
         <div class="bg-white rounded-2xl shadow-sm p-6">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h3 class="text-xl font-bold text-emerald-800">Student Attendance</h3>
-              <p class="text-sm text-gray-400">Class: <span id="tsaClass" class="font-semibold text-gold-600"></span></p>
+              <h3 class="text-xl font-bold text-emerald-800">Xaadirinta Ardayda</h3>
+              <p class="text-sm text-gray-400">Fasalka: <span id="tsaClass" class="font-semibold text-gold-600"></span></p>
             </div>
             <button onclick="markStudentAttendance()" class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-6 py-3 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg flex items-center gap-2">
-              <i class="fas fa-save"></i> Save Attendance
+              <i class="fas fa-save"></i> Kaydi Xaadirinta
             </button>
           </div>
           <div class="text-sm text-gray-500 mb-4 flex items-center gap-4">
-            <span><i class="fas fa-circle text-green-500 mr-1"></i> Present (Jooga)</span>
-            <span><i class="fas fa-circle text-red-500 mr-1"></i> Absent (Maqan)</span>
-            <span><i class="fas fa-circle text-yellow-500 mr-1"></i> Leave (Fasax)</span>
+            <span><i class="fas fa-circle text-green-500 mr-1"></i> Jooga</span>
+            <span><i class="fas fa-circle text-red-500 mr-1"></i> Maqan</span>
+            <span><i class="fas fa-circle text-yellow-500 mr-1"></i> Fasax</span>
           </div>
           <div class="overflow-x-auto">
             <table class="data-table">
               <thead>
-                <tr><th>ID</th><th>Name</th><th>Present</th><th>Absent</th><th>Leave</th></tr>
+                <tr><th>ID</th><th>Magaca</th><th>Jooga</th><th>Maqan</th><th>Fasax</th></tr>
               </thead>
               <tbody id="tsaBody"></tbody>
             </table>
           </div>
-          <div class="p-4 text-center text-gray-400 text-sm" id="tsaEmpty">No students in your class to mark attendance</div>
+          <div class="p-4 text-center text-gray-400 text-sm" id="tsaEmpty">Arday ma jiraan kuwa la calaamadeeyo</div>
         </div>
       </div>
 
-      <!-- ===== MY ATTENDANCE ===== -->
+      <!-- ===== XAADIRINTAYDA ===== -->
       <div class="page" id="page-myAttendance">
         <div class="bg-white rounded-2xl shadow-sm p-6">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h3 class="text-xl font-bold text-emerald-800">My Attendance</h3>
-              <p class="text-sm text-gray-400">Mark your daily attendance</p>
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-emerald-800">Xaadirintayda</h3>
+            <p class="text-sm text-gray-400">Fiiri oo calaamadee xaadirintaada</p>
+          </div>
+
+          <!-- Session Buttons -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="sessionButtons"></div>
+
+          <!-- Today session status summary -->
+          <div id="todaySessionStatus" class="mb-6"></div>
+
+          <!-- Attendance History -->
+          <div class="border-t border-gray-100 pt-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+              <h4 class="font-bold text-emerald-800">Taariikhda Xaadirinta</h4>
+              <select id="historyMonth" onchange="renderAttendanceHistory()" class="form-input border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white"></select>
             </div>
-            <button onclick="markTeacherAttendance()" class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-6 py-3 rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-lg flex items-center gap-2">
-              <i class="fas fa-check-circle"></i> Mark Attendance
-            </button>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Taariikhda</th><th>Subax</th><th>Barqo</th><th>Galab</th></tr>
+                </thead>
+                <tbody id="myAttendanceBody"></tbody>
+              </table>
+            </div>
+            <div id="historySummary" class="mt-4 p-3 bg-gray-50 rounded-xl text-sm text-gray-600"></div>
+            <div class="p-4 text-center text-gray-400 text-sm" id="myattEmpty">Diiwaan xaadirineed ma jiro</div>
           </div>
-
-          <!-- Current status -->
-          <div id="todayAttendanceStatus" class="mb-6"></div>
-
-          <!-- Attendance history -->
-          <h4 class="font-bold text-emerald-800 mb-4">Attendance History</h4>
-          <div class="overflow-x-auto">
-            <table class="data-table">
-              <thead>
-                <tr><th>Date</th><th>Time</th><th>Status</th></tr>
-              </thead>
-              <tbody id="myAttendanceBody"></tbody>
-            </table>
-          </div>
-          <div class="p-4 text-center text-gray-400 text-sm" id="myattEmpty">No attendance records</div>
         </div>
       </div>
 
-      <!-- ===== PROFILE ===== -->
+      <!-- ===== QIYAASTA ===== -->
       <div class="page" id="page-profile">
         <div class="max-w-2xl mx-auto">
           <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
@@ -248,28 +254,28 @@
             </div>
             <div class="space-y-4">
               <div class="flex justify-between p-3 bg-gray-50 rounded-xl">
-                <span class="text-gray-500">Teacher ID</span>
+                <span class="text-gray-500">ID-ga Macallinka</span>
                 <span class="font-medium text-emerald-800 font-mono" id="pProfileId">-</span>
               </div>
               <div class="flex justify-between p-3 bg-gray-50 rounded-xl">
-                <span class="text-gray-500">Name</span>
+                <span class="text-gray-500">Magaca</span>
                 <span class="font-medium text-emerald-800" id="pProfileName">-</span>
               </div>
               <div class="flex justify-between p-3 bg-gray-50 rounded-xl">
-                <span class="text-gray-500">Assigned Class</span>
+                <span class="text-gray-500">Fasalka loo xilsaaray</span>
                 <span class="font-medium text-emerald-800" id="pProfileClass">-</span>
               </div>
               <div class="flex justify-between p-3 bg-gray-50 rounded-xl">
-                <span class="text-gray-500">Phone</span>
+                <span class="text-gray-500">Lambarka</span>
                 <span class="font-medium text-emerald-800" id="pProfilePhone">-</span>
               </div>
               <div class="flex justify-between p-3 bg-gray-50 rounded-xl">
-                <span class="text-gray-500">Email</span>
+                <span class="text-gray-500">Imaaylka</span>
                 <span class="font-medium text-emerald-800" id="pProfileEmail">-</span>
               </div>
               <div class="flex justify-between p-3 bg-gray-50 rounded-xl">
-                <span class="text-gray-500">Role</span>
-                <span class="badge bg-emerald-100 text-emerald-700">Teacher</span>
+                <span class="text-gray-500">Doorka</span>
+                <span class="badge bg-emerald-100 text-emerald-700">Macallin</span>
               </div>
             </div>
           </div>
@@ -278,6 +284,23 @@
 
     </div>
   </main>
+
+  <!-- Session Confirmation Modal -->
+  <div id="sessionConfirmModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center">
+    <div class="bg-white rounded-2xl p-6 max-w-sm mx-4 shadow-2xl">
+      <div class="text-center mb-4">
+        <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fas fa-clock text-emerald-600 text-2xl"></i>
+        </div>
+        <h4 class="font-bold text-emerald-800 text-lg">Calaamadee Xaadirinta</h4>
+      </div>
+      <p class="text-gray-500 text-center mb-6" id="sessionConfirmText">Ma hubtaa inaad calaamadisid <strong>Subax</strong>?</p>
+      <div class="flex gap-3">
+        <button onclick="closeSessionModal()" class="flex-1 px-4 py-2.5 bg-gray-100 rounded-xl font-medium text-gray-600 hover:bg-gray-200 transition-colors">Joogso</button>
+        <button id="confirmSessionBtn" onclick="confirmMarkSession()" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all">Haa, Calaamadee</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/data.js"></script>
   <script>
@@ -291,12 +314,20 @@
 
     // ======================== NAVIGATION ========================
     const pageTitles = {
-      dashboard: ['Dashboard', 'Teacher overview'],
-      students: ['My Students', `Students in ${TEACHER_CLASS}`],
-      studentAttendance: ['Student Attendance', `Mark attendance for ${TEACHER_CLASS}`],
-      myAttendance: ['My Attendance', 'View and mark your attendance'],
-      profile: ['Profile', 'Your account details']
+      dashboard: ['Dashboard-ka', 'Macalink ahaan'],
+      students: ['Ardaydayda', `Ardayda ku jirta fasalka ${TEACHER_CLASS}`],
+      studentAttendance: ['Xaadirinta Ardayda', `Calaamadee xaadirinta ${TEACHER_CLASS}`],
+      myAttendance: ['Xaadirintayda', 'Fiiri oo calaamadee xaadirintaada'],
+      profile: ['Qiyaasta', 'Faahfaahinta akoonkaaga']
     };
+
+    const SESSION_NAMES = {
+      subax: 'Subax (06:30 AM)',
+      barqo: 'Barqo (09:30 AM)',
+      galab: 'Galab (02:30 PM)'
+    };
+
+    let pendingSession = null;
 
     function navigateTo(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -322,7 +353,7 @@
       document.getElementById('mobileOverlay').classList.toggle('hidden');
     }
 
-    // ======================== DASHBOARD ========================
+    // ======================== DASHBOARD-KA ========================
     function refreshTDashboard() {
       const students = DB.getStudentsByClass(TEACHER_CLASS);
       document.getElementById('tdashStudents').textContent = students.length;
@@ -331,14 +362,13 @@
       document.getElementById('tdashTeacherClass').textContent = TEACHER_CLASS;
       document.getElementById('teacherBadge').textContent = `${TEACHER_ID} - ${TEACHER_CLASS}`;
 
-      // Today's student attendance marked
       const today = Utils.getToday();
       const att = DB.getStudentAttendanceByDate(today).filter(a => a.class === TEACHER_CLASS);
       const uniqueStudents = [...new Set(att.map(a => a.studentId))];
       document.getElementById('tdashAttendance').textContent = uniqueStudents.length;
     }
 
-    // ======================== MY STUDENTS ========================
+    // ======================== ARDAYDAYDA ========================
     function renderTeacherStudents() {
       const students = DB.getStudentsByClass(TEACHER_CLASS);
       document.getElementById('tstudentsClass').textContent = TEACHER_CLASS;
@@ -363,7 +393,7 @@
       `).join('');
     }
 
-    // ======================== STUDENT ATTENDANCE ========================
+    // ======================== XAADIRINTA ARDAYDA ========================
     function renderStudentAttendanceForm() {
       const students = DB.getStudentsByClass(TEACHER_CLASS);
       document.getElementById('tsaClass').textContent = TEACHER_CLASS;
@@ -418,110 +448,212 @@
       });
 
       if (records.length === 0) {
-        Utils.showToast('No students to mark', 'error');
+        Utils.showToast('Arday ma jiraan kuwa la calaamadeeyo', 'error');
         return;
       }
 
-      // Remove existing records for today for this class
       const today = Utils.getToday();
       let allAttendance = DB.getStudentAttendance();
       allAttendance = allAttendance.filter(a => !(a.date === today && a.class === TEACHER_CLASS));
       DB.saveCollection('student_attendance', allAttendance);
 
-      // Add new records
       DB.markStudentAttendance(records);
-      Utils.showToast(`Attendance saved for ${records.length} students!`);
+      Utils.showToast(`Xaadirinta waa la kaydiyay ${records.length} arday!`);
       renderStudentAttendanceForm();
     }
 
-    // ======================== TEACHER (MY) ATTENDANCE ========================
+    // ======================== XAADIRINTAYDA (TEACHER ATTENDANCE) ========================
     function renderMyAttendance() {
-      const records = DB.getTeacherAttendanceByTeacher(TEACHER_ID)
-        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-      const today = Utils.getToday();
-      const todayRecord = records.find(r => r.date === today);
-
-      const statusDiv = document.getElementById('todayAttendanceStatus');
-      if (todayRecord) {
-        const isLate = todayRecord.status === 'LATE';
-        statusDiv.innerHTML = `
-          <div class="${isLate ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'} border rounded-2xl p-5">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 ${isLate ? 'bg-red-100' : 'bg-green-100'} rounded-full flex items-center justify-center">
-                <i class="fas ${isLate ? 'fa-exclamation-triangle text-red-600' : 'fa-check-circle text-green-600'} text-xl"></i>
-              </div>
-              <div>
-                <p class="font-bold ${isLate ? 'text-red-700' : 'text-green-700'}">${isLate ? 'Marked LATE Today' : 'Marked PRESENT Today'}</p>
-                <p class="text-sm text-gray-500">Time: ${Utils.formatTime(todayRecord.time)} | ${Utils.formatDate(todayRecord.date)}</p>
-              </div>
-            </div>
-          </div>`;
-      } else {
-        statusDiv.innerHTML = `
-          <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                <i class="fas fa-clock text-gray-500 text-xl"></i>
-              </div>
-              <div>
-                <p class="font-bold text-gray-700">Not Marked Today</p>
-                <p class="text-sm text-gray-500">Click "Mark Attendance" to record your attendance for today.</p>
-              </div>
-            </div>
-          </div>`;
-      }
-
-      const tbody = document.getElementById('myAttendanceBody');
-      const empty = document.getElementById('myattEmpty');
-
-      if (records.length === 0) {
-        tbody.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-
-      tbody.innerHTML = records.map(r => `
-        <tr>
-          <td class="text-sm">${Utils.formatDate(r.date)}</td>
-          <td class="text-sm">${Utils.formatTime(r.time)}</td>
-          <td><span class="badge ${r.status === 'PRESENT' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${r.status}</span></td>
-        </tr>
-      `).join('');
+      const records = DB.getTeacherAttendanceByTeacher(TEACHER_ID);
+      renderSessionButtons(records);
+      populateMonthFilter();
+      renderAttendanceHistory(records);
     }
 
-    function markTeacherAttendance() {
-      const btn = document.querySelector('#page-myAttendance button[class*="bg-gradient"]');
-      if (!btn) return;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
-      btn.disabled = true;
-
-      // Check if already marked today
+    function renderSessionButtons(records) {
       const today = Utils.getToday();
-      const existing = DB.getTeacherAttendanceByTeacher(TEACHER_ID).filter(r => r.date === today);
-      if (existing.length > 0) {
-        Utils.showToast(`Already marked attendance today as ${existing[0].status}`, 'warning');
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Mark Attendance';
-        btn.disabled = false;
+      const todayRecords = records.filter(r => r.date === today);
+      const container = document.getElementById('sessionButtons');
+      const statusDiv = document.getElementById('todaySessionStatus');
+
+      const sessions = [
+        { id: 'subax', label: 'Subax', time: '06:30 AM', lateAfter: '06:40', icon: 'fa-sun' },
+        { id: 'barqo', label: 'Barqo', time: '09:30 AM', lateAfter: '09:40', icon: 'fa-clock' },
+        { id: 'galab', label: 'Galab', time: '02:30 PM', lateAfter: '14:40', icon: 'fa-cloud-sun' }
+      ];
+
+      let allMarked = true;
+
+      container.innerHTML = sessions.map(s => {
+        const record = todayRecords.find(r => r.session === s.id);
+        const isMarked = !!record;
+        const status = record ? record.status : null;
+        if (!isMarked) allMarked = false;
+
+        let iconColor, iconBg, statusBadge;
+        if (isMarked && status === 'PRESENT') {
+          iconColor = 'text-green-600';
+          iconBg = 'bg-green-100';
+          statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-medium text-green-600"><i class="fas fa-check-circle"></i> Joog ${record.time}</span>`;
+        } else if (isMarked && status === 'LATE') {
+          iconColor = 'text-yellow-600';
+          iconBg = 'bg-yellow-100';
+          statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-medium text-yellow-600"><i class="fas fa-exclamation-triangle"></i> Soo Daahay ${record.time}</span>`;
+        } else {
+          iconColor = 'text-gray-400';
+          iconBg = 'bg-gray-100';
+          statusBadge = `<span class="inline-flex items-center gap-1 text-xs text-gray-400"><i class="far fa-clock"></i> Lama calaamadeyn</span>`;
+        }
+
+        return `
+        <div class="bg-gray-50 rounded-2xl p-5 text-center session-btn border ${isMarked ? 'border-gray-200' : 'border-emerald-200'}">
+          <div class="w-12 h-12 ${iconBg} rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas ${s.icon} ${iconColor} text-lg"></i>
+          </div>
+          <h5 class="font-bold text-gray-800 text-base">${s.label}</h5>
+          <p class="text-sm font-medium text-gray-500">${s.time}</p>
+          <p class="text-xs text-gray-400 mb-3">(Ka dib ${s.lateAfter} waa soo daah)</p>
+          ${isMarked ? `
+            <button disabled class="w-full mt-2 px-4 py-2.5 bg-gray-200 text-gray-500 rounded-xl text-sm font-medium cursor-not-allowed">
+              <i class="fas fa-check-circle mr-1"></i>Waa la calaamadeeyay
+            </button>
+            <div class="mt-2">${statusBadge}</div>
+          ` : `
+            <button onclick="markTeacherSession('${s.id}')" class="w-full mt-2 px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl text-sm font-bold hover:from-emerald-700 hover:to-emerald-800 transition-all shadow-md hover:shadow-lg">
+              <i class="fas fa-check-circle mr-1"></i>Calaamadee
+            </button>
+            <div class="mt-2">${statusBadge}</div>
+          `}
+        </div>`;
+      }).join('');
+
+      statusDiv.innerHTML = '';
+    }
+
+    function markTeacherSession(session) {
+      const today = Utils.getToday();
+      const records = DB.getTeacherAttendanceByTeacher(TEACHER_ID);
+      const alreadyMarked = records.find(r => r.date === today && r.session === session);
+
+      if (alreadyMarked) {
+        Utils.showToast('Waxaad hore u calaamadisay xaadirinta maanta', 'error');
         return;
       }
 
+      pendingSession = session;
+      document.getElementById('sessionConfirmText').innerHTML = `Ma hubtaa inaad calaamadisid <strong>${SESSION_NAMES[session]}</strong>?`;
+      document.getElementById('sessionConfirmModal').classList.remove('hidden');
+      document.getElementById('sessionConfirmModal').classList.add('flex');
+    }
+
+    function closeSessionModal() {
+      document.getElementById('sessionConfirmModal').classList.add('hidden');
+      document.getElementById('sessionConfirmModal').classList.remove('flex');
+      pendingSession = null;
+    }
+
+    function confirmMarkSession() {
+      if (!pendingSession) return;
+      const btn = document.getElementById('confirmSessionBtn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Shaqeyn...';
+      btn.disabled = true;
+
       setTimeout(() => {
-        const record = DB.markTeacherAttendance({
+        const result = DB.markTeacherAttendance({
           teacherId: TEACHER_ID,
           teacherName: TEACHER_NAME,
-          className: TEACHER_CLASS
+          className: TEACHER_CLASS,
+          session: pendingSession
         });
 
-        Utils.showToast(`Attendance marked! Status: ${record.status}`, record.status === 'PRESENT' ? 'success' : 'warning');
-        btn.innerHTML = '<i class="fas fa-check-circle"></i> Mark Attendance';
+        if (result.success) {
+          Utils.showToast('Xaadirinta waa la kaydiyay', 'success');
+        } else {
+          Utils.showToast(result.error || 'Qalad ayaa dhacay', 'error');
+        }
+
+        closeSessionModal();
+        btn.innerHTML = 'Haa, Calaamadee';
         btn.disabled = false;
         renderMyAttendance();
       }, 500);
     }
 
-    // ======================== PROFILE ========================
+    // ======================== ATTENDANCE HISTORY ========================
+    function populateMonthFilter() {
+      const select = document.getElementById('historyMonth');
+      select.innerHTML = '';
+      const somaliMonths = ['Jannaayo', 'Febraayo', 'Maarso', 'Abriil', 'Maajo', 'Juun', 'Luuliyo', 'Ogosto', 'Sebteembar', 'Oktoobar', 'Nofeembar', 'Diseembar'];
+      const now = new Date();
+      for (let i = 0; i < 12; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const label = `${somaliMonths[d.getMonth()]} ${d.getFullYear()}`;
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = label;
+        if (i === 0) opt.selected = true;
+        select.appendChild(opt);
+      }
+    }
+
+    function renderAttendanceHistory(records) {
+      records = records || DB.getTeacherAttendanceByTeacher(TEACHER_ID);
+      const month = document.getElementById('historyMonth').value;
+      const monthRecords = records.filter(r => r.date.startsWith(month));
+
+      const tbody = document.getElementById('myAttendanceBody');
+      const empty = document.getElementById('myattEmpty');
+      const summaryDiv = document.getElementById('historySummary');
+
+      if (monthRecords.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        summaryDiv.innerHTML = '';
+        return;
+      }
+      empty.style.display = 'none';
+
+      const [year, mon] = month.split('-').map(Number);
+      const daysInMonth = new Date(year, mon, 0).getDate();
+
+      let totalPresent = 0, totalLate = 0, totalAbsent = 0;
+      let rows = '';
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${month}-${String(day).padStart(2, '0')}`;
+        const dayRecs = monthRecords.filter(r => r.date === dateStr);
+        if (dayRecs.length === 0) continue;
+
+        const subax = dayRecs.find(r => r.session === 'subax');
+        const barqo = dayRecs.find(r => r.session === 'barqo');
+        const galab = dayRecs.find(r => r.session === 'galab');
+
+        [subax, barqo, galab].forEach(r => {
+          if (!r) totalAbsent++;
+          else if (r.status === 'WAQTIGIISA YIMID') totalPresent++;
+          else if (r.status === 'SOO DAAHAY') totalLate++;
+        });
+
+        const icon = (rec) => {
+          if (!rec) return '<i class="fas fa-times-circle text-red-400"></i>';
+          if (rec.status === 'WAQTIGIISA YIMID') return '<i class="fas fa-check-circle text-green-500"></i>';
+          return '<i class="fas fa-exclamation-triangle text-yellow-500"></i>';
+        };
+
+        rows += `<tr>
+          <td class="text-sm font-medium text-gray-700">${String(day).padStart(2, '0')}/${String(mon).padStart(2, '0')}/${year}</td>
+          <td class="text-center text-lg">${icon(subax)}</td>
+          <td class="text-center text-lg">${icon(barqo)}</td>
+          <td class="text-center text-lg">${icon(galab)}</td>
+        </tr>`;
+      }
+
+      tbody.innerHTML = rows;
+      summaryDiv.innerHTML = `<span class="font-semibold text-gray-700">Soo koobid:</span> Waqtigii yimid: <strong class="text-green-600">${totalPresent}</strong> | Soo Daahay: <strong class="text-yellow-600">${totalLate}</strong> | Maqan: <strong class="text-red-600">${totalAbsent}</strong>`;
+    }
+
+    // ======================== QIYAASTA ========================
     function renderProfile() {
       document.getElementById('pName').textContent = TEACHER_NAME;
       document.getElementById('pId').textContent = TEACHER_ID;

@@ -135,13 +135,16 @@ app.get('/api/attendance/teacher', authMiddleware, async (req, res) => {
 app.post('/api/attendance/teacher', authMiddleware, async (req, res) => {
   try {
     const db = await getPool();
-    const { teacherId, teacherName, className, date: rd, time: rt, status: rs } = req.body;
+    const { teacherId, teacherName, className, date: rd, time: rt, status: rs, session: rsession } = req.body;
     const now = new Date(); const date = rd || now.toISOString().split('T')[0]; const time = rt || now.toTimeString().split(' ')[0].slice(0, 5);
-    if (rs) { await db.query('INSERT INTO teacher_attendance (teacher_id,teacher_name,class_name,date,time,status) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT (teacher_id,date) DO NOTHING', [teacherId, teacherName, className, date, time, rs]); return res.json({ synced: true }); }
-    if ((await db.query('SELECT * FROM teacher_attendance WHERE teacher_id=$1 AND date=$2', [teacherId, date])).rows.length) return res.status(400).json({ error: 'Already marked today' });
-    const [lh, lm] = (process.env.LATE_TIME||'06:30').split(':').map(Number); const [h, m] = time.split(':').map(Number);
-    const status = (h < lh || (h === lh && m <= lm)) ? 'PRESENT' : 'LATE';
-    const r = await db.query('INSERT INTO teacher_attendance (teacher_id,teacher_name,class_name,date,time,status) VALUES($1,$2,$3,$4,$5,$6) RETURNING *', [teacherId, teacherName, className, date, time, status]);
+    if (rs) { await db.query('INSERT INTO teacher_attendance (teacher_id,teacher_name,class_name,date,time,session,status) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (teacher_id,date,session) DO NOTHING', [teacherId, teacherName, className, date, time, rsession||'subax', rs]); return res.json({ synced: true }); }
+    if ((await db.query('SELECT * FROM teacher_attendance WHERE teacher_id=$1 AND date=$2 AND session=$3', [teacherId, date, rsession||'subax'])).rows.length) return res.status(400).json({ error: 'Already marked' }));
+    const session = rsession || 'subax';
+    const lateMap = { subax: '06:40', barqo: '09:40', galab: '14:40' };
+    const lateTime = lateMap[session] || '06:40';
+    const [lh, lm] = lateTime.split(':').map(Number); const [h, m] = time.split(':').map(Number);
+    const status = (h < lh || (h === lh && m <= lm)) ? 'WAQTIGIISA YIMID' : 'SOO DAAHAY';
+    const r = await db.query('INSERT INTO teacher_attendance (teacher_id,teacher_name,class_name,date,time,session,status) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *', [teacherId, teacherName, className, date, time, session, status]);
     res.json(r.rows[0]);
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });

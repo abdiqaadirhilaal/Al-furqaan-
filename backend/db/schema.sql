@@ -38,9 +38,10 @@ CREATE TABLE IF NOT EXISTS teacher_attendance (
   class_name VARCHAR(50) NOT NULL,
   date DATE NOT NULL,
   time TIME NOT NULL,
-  status VARCHAR(20) NOT NULL,
+  session VARCHAR(10) DEFAULT 'subax',
+  status VARCHAR(30) NOT NULL,
   timestamp TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(teacher_id, date)
+  UNIQUE(teacher_id, date, session)
 );
 
 CREATE TABLE IF NOT EXISTS student_attendance (

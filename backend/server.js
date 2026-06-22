@@ -195,7 +195,7 @@ app.get('/api/attendance/teacher', authMiddleware, async (req, res) => {
 
 app.post('/api/attendance/teacher', authMiddleware, async (req, res) => {
   try {
-    const { teacherId, teacherName, className, date: reqDate, time: reqTime, status: reqStatus } = req.body;
+    const { teacherId, teacherName, className, date: reqDate, time: reqTime, status: reqStatus, session: reqSession } = req.body;
     const now = new Date();
     const date = reqDate || now.toISOString().split('T')[0];
     const time = reqTime || now.toTimeString().split(' ')[0].slice(0, 5);
@@ -203,29 +203,32 @@ app.post('/api/attendance/teacher', authMiddleware, async (req, res) => {
     // For sync (explicit status provided), upsert
     if (reqStatus) {
       await pool.query(
-        'INSERT INTO teacher_attendance (teacher_id, teacher_name, class_name, date, time, status) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING',
-        [teacherId, teacherName, className, date, time, reqStatus]
+        'INSERT INTO teacher_attendance (teacher_id, teacher_name, class_name, date, time, session, status) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (teacher_id, date, session) DO NOTHING',
+        [teacherId, teacherName, className, date, time, reqSession || 'subax', reqStatus]
       );
       return res.json({ synced: true, teacherId, date, status: reqStatus });
     }
 
-    // Check if already marked today (live marking)
+    // Check if already marked for this session today
     const existing = await pool.query(
-      'SELECT * FROM teacher_attendance WHERE teacher_id = $1 AND date = $2',
-      [teacherId, date]
+      'SELECT * FROM teacher_attendance WHERE teacher_id = $1 AND date = $2 AND session = $3',
+      [teacherId, date, reqSession || 'subax']
     );
     if (existing.rows.length > 0) {
-      return res.status(400).json({ error: 'Already marked today', record: existing.rows[0] });
+      return res.status(400).json({ error: 'Already marked', record: existing.rows[0] });
     }
 
-    // Determine status (configurable late time via env or default 06:30)
-    const [lateH, lateM] = (process.env.LATE_TIME || '06:30').split(':').map(Number);
+    // Determine status based on session
+    const session = reqSession || 'subax';
+    const lateMap = { subax: '06:40', barqo: '09:40', galab: '14:40' };
+    const lateTime = lateMap[session] || '06:40';
+    const [lateH, lateM] = lateTime.split(':').map(Number);
     const [hours, minutes] = time.split(':').map(Number);
-    const status = (hours < lateH || (hours === lateH && minutes <= lateM)) ? 'PRESENT' : 'LATE';
+    const status = (hours < lateH || (hours === lateH && minutes <= lateM)) ? 'WAQTIGIISA YIMID' : 'SOO DAAHAY';
 
     const result = await pool.query(
-      'INSERT INTO teacher_attendance (teacher_id, teacher_name, class_name, date, time, status) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
-      [teacherId, teacherName, className, date, time, status]
+      'INSERT INTO teacher_attendance (teacher_id, teacher_name, class_name, date, time, session, status) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+      [teacherId, teacherName, className, date, time, session, status]
     );
     res.json(result.rows[0]);
   } catch (err) {
