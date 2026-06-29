@@ -1020,16 +1020,10 @@
     function loadTeacherRegForm() {
       const classes = DB.getClasses();
       const teachers = DB.getTeachers();
-      const assignedClasses = teachers.map(t => t.class);
-      const availableClasses = classes.filter(c => !assignedClasses.includes(c));
 
       const sel = document.getElementById('tregClass');
-      if (availableClasses.length === 0) {
-        sel.innerHTML = '<option value="">Fasal lama helin</option>';
-      } else {
-        sel.innerHTML = '<option value="">Dooro Fasalka</option>' +
-          availableClasses.map(c => `<option value="${c}">${c}</option>`).join('');
-      }
+      sel.innerHTML = '<option value="">Dooro Fasalka</option>' +
+        classes.map(c => `<option value="${c}">${c}</option>`).join('');
 
       const existingIds = teachers.map(t => parseInt(t.id.replace('T', '')));
       const nextNum = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;

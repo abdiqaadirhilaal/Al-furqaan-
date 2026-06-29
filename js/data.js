@@ -1,6 +1,6 @@
 const DB = {
   _prefix: 'furqaan_',
-  _version: 3,
+  _version: 4,
   // Somali time slot configs
   _sessions: {
     subax: { label: 'Subax', start: '06:30', lateAfter: '06:40' },
@@ -29,10 +29,10 @@ const DB = {
     };
     localStorage.setItem(this._prefix + 'manager', JSON.stringify(manager));
     const teachers = [
-      { id: 'T001', name: 'Teacher 1', password: 'furqaan1234', class: '1', phone: '0611111111', email: 'teacher1@furqaan.edu' },
-      { id: 'T002', name: 'Teacher 2', password: 'furqaan1234', class: '2', phone: '0612222222', email: 'teacher2@furqaan.edu' },
-      { id: 'T003', name: 'Teacher 3', password: 'furqaan1234', class: '3', phone: '0613333333', email: 'teacher3@furqaan.edu' },
-      { id: 'T004', name: 'Teacher 4', password: 'furqaan1234', class: '4', phone: '0614444444', email: 'teacher4@furqaan.edu' }
+      { id: 'T001', name: 'Aadam Abuukar Siidow', password: 'furqaan1234', class: '1', phone: '+252612431691', email: '' },
+      { id: 'T002', name: 'Cali Nuur Sheeq', password: 'furqaan1234', class: '2', phone: '+252619835757', email: '' },
+      { id: 'T003', name: 'Cali C. Raxman Xerow', password: 'furqaan1234', class: '3', phone: '+252615539640', email: '' },
+      { id: 'T004', name: 'Xasan Salaad Naxris', password: 'furqaan1234', class: '4', phone: '+252771063068', email: '' }
     ];
     localStorage.setItem(this._prefix + 'teachers', JSON.stringify(teachers));
     localStorage.setItem(this._prefix + 'students', JSON.stringify([]));
@@ -283,7 +283,7 @@ const Auth = {
       else if (user.role === 'teacher') window.location.href = 'teacher-dashboard.html';
       return false;
     }
-    return true;
+    return user;
   },
   checkAuth() {
     const user = this.getCurrentUser();
