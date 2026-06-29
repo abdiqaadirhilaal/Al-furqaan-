@@ -689,6 +689,15 @@
     renderStudentAttendanceForm();
     renderMyAttendance();
     renderProfile();
+
+    // Load backend data & re-render
+    DB.loadFromBackend().then(() => {
+      refreshTDashboard();
+      renderTeacherStudents();
+      renderStudentAttendanceForm();
+      renderMyAttendance();
+      renderProfile();
+    });
   </script>
 </body>
 </html>

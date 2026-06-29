@@ -86,7 +86,43 @@ const DB = {
   },
 
   getCollection(name) { const d = localStorage.getItem(this._prefix + name); return d ? JSON.parse(d) : []; },
-  saveCollection(name, data) { localStorage.setItem(this._prefix + name, JSON.stringify(data)); },
+  saveCollection(name, data) {
+    localStorage.setItem(this._prefix + name, JSON.stringify(data));
+    if (this._syncEnabled) this._debounceSync(name);
+  },
+  _syncEnabled: false,
+  _syncTimers: {},
+  enableSync() { this._syncEnabled = true; },
+  disableSync() { this._syncEnabled = false; },
+  _debounceSync(name) {
+    if (this._syncTimers[name]) clearTimeout(this._syncTimers[name]);
+    this._syncTimers[name] = setTimeout(() => this._syncToBackend(name), 1000);
+  },
+  _syncToBackend(name) {
+    if (!Sync.isConfigured()) return;
+    const data = this.getCollection(name);
+    if (!data.length) return;
+    const api = {
+      teachers: { path: '/api/teachers', map: t => ({ id: t.id, name: t.name, password: t.password, class: t.class, phone: t.phone, email: t.email }) },
+      students: { path: '/api/students', map: s => ({ id: s.id, name: s.name, class: s.class, phone: s.phone, parent: s.parent, registrationDate: s.registrationDate, status: s.status }) },
+      payments: { path: '/api/payments', map: p => ({ studentId: p.studentId, studentName: p.studentName, className: p.className, amount: p.amount, date: p.date, recordedBy: p.recordedBy }) },
+      teacher_attendance: { path: '/api/attendance/teacher', map: a => ({ teacherId: a.teacherId, teacherName: a.teacherName, className: a.className, date: a.date, time: a.time, session: a.session, status: a.status }) },
+      student_attendance: { path: '/api/attendance/student', map: a => ({ records: [{ studentId: a.studentId, studentName: a.studentName, class: a.class, status: a.status, date: a.date, time: a.time }] }) }
+    };
+    const cfg = api[name];
+    if (!cfg) return;
+    data.forEach(item => {
+      Sync.request('POST', cfg.path, cfg.map(item)).catch(() => {});
+    });
+  },
+  async loadFromBackend() {
+    if (!Sync.isConfigured()) return;
+    try {
+      if (!await Sync.isAvailable()) return;
+      await Sync.restoreFromBackend();
+      this._syncEnabled = true;
+    } catch {}
+  },
 
   getStudents() { return this.getCollection('students'); },
   getStudentsByClass(className) { return this.getStudents().filter(s => s.class === className); },

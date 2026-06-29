@@ -196,8 +196,7 @@
             const data = await resp.json();
             localStorage.setItem('furqaan_backend_token', data.token);
             Auth.login(username, password, 'manager');
-            btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
-            window.location.href = 'manager-dashboard.html';
+            redirectTo('manager-dashboard.html', btn);
             return;
           }
         } catch {} // fall through to localStorage
@@ -206,8 +205,7 @@
       setTimeout(() => {
         const result = Auth.login(username, password, 'manager');
         if (result.success) {
-          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
-          window.location.href = 'manager-dashboard.html';
+          redirectTo('manager-dashboard.html', btn);
         } else {
           btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Soo Gal Maareeyaha';
           btn.disabled = false;
@@ -239,8 +237,7 @@
             const data = await resp.json();
             localStorage.setItem('furqaan_backend_token', data.token);
             Auth.login(id, password, 'teacher');
-            btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
-            window.location.href = 'teacher-dashboard.html';
+            redirectTo('teacher-dashboard.html', btn);
             return;
           }
         } catch {} // fall through to localStorage
@@ -249,8 +246,7 @@
       setTimeout(() => {
         const result = Auth.login(id, password, 'teacher');
         if (result.success) {
-          btn.innerHTML = '<i class="fas fa-check mr-2"></i>Redirecting...';
-          window.location.href = 'teacher-dashboard.html';
+          redirectTo('teacher-dashboard.html', btn);
         } else {
           btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Soo Gal Macallinka';
           btn.disabled = false;
@@ -258,6 +254,16 @@
         }
       }, 800);
     });
+
+    // Helper: load backend data then redirect
+    async function redirectTo(url, btn, btnText) {
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Soo galayaa...';
+      if (Sync.isConfigured()) {
+        await DB.loadFromBackend();
+      }
+      btn.innerHTML = '<i class="fas fa-check mr-2"></i>Toosinaa...';
+      window.location.href = url;
+    }
 
     // Redirect if already logged in
     const user = Auth.getCurrentUser();

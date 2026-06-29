@@ -1713,6 +1713,17 @@
 
     document.getElementById('taDateFilter').value = Utils.getToday();
     document.getElementById('saDateFilter').value = Utils.getToday();
+
+    // Load backend data & re-render
+    DB.loadFromBackend().then(() => {
+      refreshDashboard();
+      renderStudentsList();
+      renderTeachersList();
+      renderTeacherAttendance();
+      renderStudentAttendance();
+      renderRecentPayments();
+      loadFinanceReport('monthly');
+    });
   </script>
 </body>
 </html>

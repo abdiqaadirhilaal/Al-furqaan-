@@ -90,10 +90,11 @@ app.post('/api/students', authMiddleware, async (req, res) => {
     const { id, name, class: c, phone, parent, registrationDate, status } = req.body;
     let sid = id;
     if (!sid) { const cnt = await db.query('SELECT COUNT(*) FROM students'); sid = `STU${String(parseInt(cnt.rows[0].count) + 1).padStart(4, '0')}`; }
-    const r = await db.query('INSERT INTO students (id,name,class,phone,parent,registration_date,status) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+    const r = await db.query(`INSERT INTO students (id,name,class,phone,parent,registration_date,status) VALUES($1,$2,$3,$4,$5,$6,$7)
+      ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, class=EXCLUDED.class, phone=EXCLUDED.phone, parent=EXCLUDED.parent, registration_date=EXCLUDED.registration_date, status=EXCLUDED.status RETURNING *`,
       [sid, name, c, phone||'', parent||'', registrationDate||new Date().toISOString().split('T')[0], status||'active']);
     res.json(r.rows[0]);
-  } catch (err) { if (err.code === '23505') return res.status(400).json({ error: 'Student ID already exists' }); console.error(err); res.status(500).json({ error: err.message }); }
+  } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
 
 app.delete('/api/students/:id', authMiddleware, async (req, res) => {
@@ -110,9 +111,9 @@ app.post('/api/teachers', authMiddleware, async (req, res) => {
   try {
     const db = await getPool();
     const { id, name, password, class: c, phone, email } = req.body;
-    if ((await db.query('SELECT id FROM teachers WHERE id = $1', [id])).rows.length) return res.status(400).json({ error: `Teacher ID ${id} already exists` });
-    if ((await db.query('SELECT id FROM teachers WHERE class = $1', [c])).rows.length) return res.status(400).json({ error: `Class ${c} already has a teacher` });
-    const r = await db.query('INSERT INTO teachers (id,name,password,class,phone,email) VALUES($1,$2,$3,$4,$5,$6) RETURNING *', [id, name, password, c, phone||'-', email||'']);
+    if ((await db.query('SELECT id FROM teachers WHERE id != $1 AND class = $2', [id, c])).rows.length && !(await db.query('SELECT id FROM teachers WHERE id = $1 AND class = $2', [id, c])).rows.length) return res.status(400).json({ error: `Class ${c} already has a teacher` });
+    const r = await db.query(`INSERT INTO teachers (id,name,password,class,phone,email) VALUES($1,$2,$3,$4,$5,$6)
+      ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, password=EXCLUDED.password, class=EXCLUDED.class, phone=EXCLUDED.phone, email=EXCLUDED.email RETURNING *`, [id, name, password, c, phone||'-', email||'']);
     res.json(r.rows[0]);
   } catch (err) { console.error(err); res.status(500).json({ error: err.message }); }
 });
